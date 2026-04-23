@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pipeline Demo — CaseZero Lien Resolution Intelligence</title>
+  <meta name="description" content="Watch CaseZero process a real PI lien case end-to-end: detection, Ahlborn reduction, letter drafting, negotiation, disbursement waterfall."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' stroke='%2300b89a' stroke-width='2' fill='none'/%3E%3Cline x1='10' y1='16' x2='22' y2='16' stroke='%2300b89a' stroke-width='2' stroke-linecap='round'/%3E%3Cline x1='16' y1='11' x2='16' y2='22' stroke='%2300b89a' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"/>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #08111e; }
+    #root { height: 100%; }
+    #loading {
+      position: fixed; inset: 0; background: #08111e;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+      font-family: 'IBM Plex Sans', sans-serif; color: #1a4060; font-size: 13px; letter-spacing: .05em;
+      z-index: 9999; transition: opacity .4s;
+    }
+    #loading svg { animation: spin 1.4s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="14" cy="14" r="12" stroke="#0b2a3a" stroke-width="2"/>
+      <path d="M14 2 A12 12 0 0 1 26 14" stroke="#00b89a" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <span>Initialising pipeline…</span>
+  </div>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const NW = 182, NH = 96;
+
+    const DEFS = {
+      intake:     { c:'#00b89a', bg:'#030f0c', bd:'#074030', gl:'◈', role:'Case Intake'    },
+      detector:   { c:'#38bdf8', bg:'#020c16', bd:'#0c2c50', gl:'◎', role:'Lien Detector'  },
+      statute:    { c:'#818cf8', bg:'#060514', bd:'#1e1a5a', gl:'§',  role:'Statute Engine' },
+      drafter:    { c:'#4ade80', bg:'#03100a', bd:'#0a2e18', gl:'◆', role:'Letter Drafter' },
+      negotiator: { c:'#f59e0b', bg:'#0d0b02', bd:'#3a2c00', gl:'◉', role:'Negotiator'     },
+      waterfall:  { c:'#00d4b8', bg:'#030f0c', bd:'#094038', gl:'▽', role:'Waterfall'      },
+    };
+
+    const STAT = {
+      active:   { c:'#00b89a', l:'RUNNING', p:true  },
+      queued:   { c:'#f59e0b', l:'QUEUED',  p:false },
+      idle:     { c:'#1a3a5a', l:'STANDBY', p:false },
+      review:   { c:'#818cf8', l:'REVIEW',  p:true  },
+    };
+
+    const INIT_A = [
+      { id:'int1', name:'Case Intake',      type:'intake',     status:'active', x: 44, y:232,
+        skills:['Filevine API','Case Parse','Metadata Extract','Dedup'], mcps:['Filevine','DocuSign'] },
+      { id:'det1', name:'Lien Detector',    type:'detector',   status:'active', x:294, y: 80,
+        skills:['Medicare MSP','ERISA ID','Hospital LOP','PIP'], mcps:['CMS Portal','MD Statutes'] },
+      { id:'det2', name:'Statute Analyzer', type:'statute',    status:'active', x:294, y:384,
+        skills:['Ahlborn','VA ERISA','DC MedPay Hold','MD LOP'], mcps:['VA Code','DC Regs'] },
+      { id:'dft1', name:'Letter Drafter',   type:'drafter',    status:'queued', x:550, y: 80,
+        skills:['Reduction Letters','Compliance Format','Lienholder DB'], mcps:['DocuSign','Notion'] },
+      { id:'neg1', name:'Negotiator',       type:'negotiator', status:'queued', x:550, y:384,
+        skills:['Response Tracking','Counter-offer','Negotiation Log'], mcps:['Gmail','Filevine'] },
+      { id:'wtr1', name:'Waterfall Engine', type:'waterfall',  status:'idle',   x:806, y:232,
+        skills:['Disbursement Calc','Client Net','Attorney Fees','Ledger'], mcps:['Filevine','QuickBooks'] },
+    ];
+
+    const CONNS = [
+      { id:'c1', from:'int1', to:'det1', lbl:'case data'   },
+      { id:'c2', from:'int1', to:'det2', lbl:'case data'   },
+      { id:'c3', from:'det1', to:'dft1', lbl:'lien types'  },
+      { id:'c4', from:'det2', to:'dft1', lbl:'reductions'  },
+      { id:'c5', from:'dft1', to:'neg1', lbl:'letters'     },
+      { id:'c6', from:'neg1', to:'wtr1', lbl:'settlements' },
+      { id:'c7', from:'det2', to:'wtr1', lbl:'allocation'  },
+    ];
+
+    const LOG0 = [
+      { t:'10:14:02', m:'Case #4821 — Rodriguez v. State Farm ingested from Filevine' },
+      { t:'10:14:03', m:'Lien Detector: Medicare MSP lien confirmed — $1,840.00' },
+      { t:'10:14:04', m:'Lien Detector: Hospital LOP identified — Silver Spring Medical — $680.00' },
+      { t:'10:14:05', m:'Statute Analyzer: Maryland case — Ahlborn proportionate-share triggered' },
+      { t:'10:14:07', m:'Allocation: gross $23,500 · max liability $95,000 → 24.7% proration factor' },
+      { t:'10:14:08', m:'Ahlborn reduction: Medicare $1,840 → $453.08 (75.4% reduction)' },
+      { t:'10:14:10', m:'Hospital LOP: negotiation floor set at $420.00' },
+    ];
+
+    const MSGS = [
+      n => `${n}: statutory calculation complete`,
+      n => `${n}: lienholder response received and logged`,
+      n => `${n}: reduction letter queued for attorney review`,
+      n => `${n}: Filevine record updated`,
+      n => `${n}: CMS portal query returned — plan confirmed`,
+      n => `${n}: disbursement waterfall recalculated`,
+      n => `${n}: counter-offer drafted — awaiting approval`,
+      n => `${n}: allocation percentage verified`,
+      n => `${n}: ERISA plan-type confirmed: fully-insured`,
+      n => `${n}: DocuSign envelope prepared`,
+      n => `${n}: proration factor applied — $983 recovered for client`,
+    ];
+
+    const STAT_POOL = ['active','active','active','queued','queued','idle','review'];
+
+    function Lbl({ children }) {
+      return <div style={{ fontSize:9, color:'#1a4060', letterSpacing:'.09em', fontWeight:600, marginBottom:4, marginTop:9 }}>{children}</div>;
+    }
+    function Hr() {
+      return <div style={{ height:1, background:'#0b1e30', margin:'10px 0' }}/>;
+    }
+
+    function App() {
+      const [agents,  setAgents]  = useState(INIT_A);
+      const [sel,     setSel]     = useState(null);
+      const [zoom,    setZoom]    = useState(0.86);
+      const [pan,     setPan]     = useState({ x:30, y:18 });
+      const [drag,    setDrag]    = useState(null);
+      const [panning, setPanning] = useState(false);
+      const [panSt,   setPanSt]   = useState({ x:0, y:0 });
+      const [log,     setLog]     = useState(LOG0);
+      const wrapRef = useRef(null);
+
+      const selAg = agents.find(a => a.id === sel) || null;
+      const cts = { active:0, queued:0, idle:0, review:0 };
+      agents.forEach(a => { if (cts[a.status] !== undefined) cts[a.status]++; });
+
+      const addLog = m => setLog(l => [{ t: new Date().toLocaleTimeString('en-US', {hour12:false}), m }, ...l.slice(0, 59)]);
+
+      // Hide loading overlay once mounted
+      useEffect(() => {
+        const el = document.getElementById('loading');
+        if (el) { el.style.opacity = '0'; setTimeout(() => el.remove(), 400); }
+      }, []);
+
+      // Live simulation
+      useEffect(() => {
+        const t = setInterval(() => {
+          setAgents(prev => {
+            const i  = Math.floor(Math.random() * prev.length);
+            const ag = prev[i];
+            const ns = STAT_POOL[Math.floor(Math.random() * STAT_POOL.length)];
+            addLog(MSGS[Math.floor(Math.random() * MSGS.length)](ag.name));
+            return prev.map((a, j) => j === i ? { ...a, status: ns } : a);
+          });
+        }, 2200);
+        return () => clearInterval(t);
+      }, []);
+
+      // Scroll-to-zoom
+      useEffect(() => {
+        const el = wrapRef.current; if (!el) return;
+        const h = e => { e.preventDefault(); setZoom(z => Math.max(.32, Math.min(2.5, z - e.deltaY * .0008))); };
+        el.addEventListener('wheel', h, { passive: false });
+        return () => el.removeEventListener('wheel', h);
+      }, []);
+
+      const onCvDown = e => {
+        if (e.target.closest('.ag')) return;
+        setSel(null); setPanning(true);
+        setPanSt({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+      };
+      const onNdDown = (e, id) => {
+        e.stopPropagation(); setSel(id);
+        const ag = agents.find(a => a.id === id);
+        setDrag({ id, sx: e.clientX, sy: e.clientY, ox: ag.x, oy: ag.y });
+      };
+      const onMove = e => {
+        if (drag) {
+          const dx = (e.clientX - drag.sx) / zoom, dy = (e.clientY - drag.sy) / zoom;
+          setAgents(p => p.map(a => a.id === drag.id ? { ...a, x: drag.ox + dx, y: drag.oy + dy } : a));
+        } else if (panning) {
+          setPan({ x: e.clientX - panSt.x, y: e.clientY - panSt.y });
+        }
+      };
+      const onUp = () => { setDrag(null); setPanning(false); };
+
+      return (
+        <div onMouseMove={onMove} onMouseUp={onUp}
+          style={{ fontFamily:"'IBM Plex Sans','Segoe UI',sans-serif", fontSize:12, lineHeight:1.5,
+                   background:'#08111e', color:'#5a8aaa', height:'100vh', display:'flex',
+                   flexDirection:'column', overflow:'hidden', userSelect:'none' }}>
+          <style>{`
+            @keyframes PR  { 0%{transform:scale(1);opacity:.4} 100%{transform:scale(2.1);opacity:0} }
+            @keyframes FA  { from{stroke-dashoffset:44} to{stroke-dashoffset:0} }
+            @keyframes BL  { 0%,100%{opacity:1} 50%{opacity:.2} }
+            @keyframes FI  { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+            .ag { transition:box-shadow .15s,border-color .15s; }
+            .ag:hover { cursor:grab; }
+            .ag:active { cursor:grabbing; }
+            .sbtn:hover { opacity:.65 !important; cursor:pointer; }
+            .rtype:hover { border-color: var(--hc) !important; }
+            ::-webkit-scrollbar { width:3px }
+            ::-webkit-scrollbar-track { background:#060e1a }
+            ::-webkit-scrollbar-thumb { background:#0b1e30 }
+          `}</style>
+
+          {/* ── TOP BAR ── */}
+          <div style={{ height:54, background:'#060d18', borderBottom:'1px solid #0b1e30',
+                        display:'flex', alignItems:'center', padding:'0 20px', gap:18, flexShrink:0 }}>
+
+            {/* Logo + back link */}
+            <a href="/" style={{ display:'flex', alignItems:'center', gap:10, textDecoration:'none' }}>
+              <div style={{ width:32, height:32, background:'#00b89a14', borderRadius:7,
+                            border:'1px solid #00b89a28', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <circle cx="9" cy="9" r="7.5" stroke="#00b89a" strokeWidth="1.4"/>
+                  <rect x="5.5" y="4.2" width="5" height="6.6" rx="1" stroke="#00b89a" strokeWidth="1.1" fill="none"/>
+                  <line x1="5.5" y1="6.8" x2="9.5" y2="6.8" stroke="#00d4b8" strokeWidth="1.1"/>
+                  <line x1="5.5" y1="8.8" x2="9.5" y2="8.8" stroke="#00d4b8" strokeWidth=".9"/>
+                  <circle cx="11.5" cy="12.5" r="2.4" stroke="#00b89a" strokeWidth="1.1" fill="none"/>
+                  <line x1="13.2" y1="14.2" x2="14.8" y2="15.8" stroke="#00b89a" strokeWidth="1.4" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <div>
+                <div style={{ fontSize:13, fontWeight:600, color:'#c8e8e0', letterSpacing:'.09em' }}>CASEZERO</div>
+                <div style={{ fontSize:9, color:'#1a4060', letterSpacing:'.06em', fontWeight:500 }}>← casezero.one</div>
+              </div>
+            </a>
+
+            <div style={{ width:1, height:24, background:'#0b1e30' }}/>
+
+            {/* Live badge */}
+            <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:9, color:'#1a4060', fontWeight:500 }}>
+              <span style={{ color:'#00b89a', fontSize:6, animation:'BL 2s ease-in-out infinite' }}>●</span>
+              PIPELINE DEMO
+            </div>
+
+            {/* Status pills */}
+            {[['active','#00b89a','RUNNING'],['queued','#f59e0b','QUEUED'],['review','#818cf8','REVIEW'],['idle','#1a3a5a','STANDBY']].map(([s,c,l]) =>
+              cts[s] > 0 && (
+                <span key={s} style={{ fontSize:10, display:'flex', alignItems:'center', gap:4 }}>
+                  <span style={{ color:c, fontSize:7, animation:s==='active'?'BL 2s ease-in-out infinite':'none' }}>●</span>
+                  <span style={{ color:c, fontWeight:600 }}>{cts[s]}</span>
+                  <span style={{ color:'#1a3a5a', fontWeight:500 }}>{l}</span>
+                </span>
+              )
+            )}
+
+            {/* Case context */}
+            <div style={{ fontSize:10, color:'#1a4060', background:'#060d18', border:'1px solid #0b1e30',
+                          padding:'5px 14px', borderRadius:4, fontWeight:500 }}>
+              <span style={{ color:'#00b89a' }}>▶</span>&ensp;
+              Case #4821 — Rodriguez v. State Farm&ensp;
+              <span style={{ color:'#0b1e30' }}>· $23,500 gross · Maryland</span>
+            </div>
+
+            <div style={{ marginLeft:'auto', display:'flex', alignItems:'center', gap:12 }}>
+              {/* Zoom */}
+              <div style={{ display:'flex', alignItems:'center', gap:8, fontSize:10 }}>
+                <span style={{ color:'#1a3a5a', fontWeight:500 }}>ZOOM</span>
+                <input type="range" min=".32" max="2.5" step=".04" value={zoom}
+                  onChange={e => setZoom(+e.target.value)}
+                  style={{ width:68, accentColor:'#00b89a', cursor:'pointer' }}/>
+                <span style={{ color:'#5a8aaa', minWidth:30 }}>{Math.round(zoom*100)}%</span>
+              </div>
+
+              {/* CTA */}
+              <a href="https://casezero.one/#early-access"
+                style={{ fontSize:11, fontWeight:600, background:'#00b89a', color:'#fff',
+                         padding:'8px 16px', borderRadius:5, textDecoration:'none',
+                         letterSpacing:'.03em', boxShadow:'0 2px 12px rgba(0,184,154,.3)',
+                         whiteSpace:'nowrap' }}>
+                Request Access →
+              </a>
+            </div>
+          </div>
+
+          {/* ── BODY ── */}
+          <div style={{ flex:1, display:'flex', overflow:'hidden' }}>
+
+            {/* CANVAS */}
+            <div ref={wrapRef}
+              style={{ flex:1, position:'relative', overflow:'hidden', cursor:panning?'grabbing':'default' }}
+              onMouseDown={onCvDown}>
+
+              {/* Grid */}
+              <div style={{ position:'absolute', inset:0,
+                            backgroundImage:'radial-gradient(circle,#0d2235 1px,transparent 0)',
+                            backgroundSize:'30px 30px', opacity:.55, pointerEvents:'none' }}/>
+              {/* Atmosphere */}
+              <div style={{ position:'absolute', inset:0,
+                            background:'radial-gradient(ellipse at 46% 48%,#091a2c 0%,transparent 58%)',
+                            pointerEvents:'none' }}/>
+
+              {/* Stage labels */}
+              {[
+                { label:'01 · INTAKE',     pct:'6%'  },
+                { label:'02 · ANALYSE',    pct:'31%' },
+                { label:'03 · DRAFT',      pct:'57%' },
+                { label:'04 · RESOLVE',    pct:'82%' },
+              ].map(({label, pct}) => (
+                <div key={label} style={{ position:'absolute', top:14, left:pct, fontSize:9,
+                                          color:'#0d2035', fontWeight:600, letterSpacing:'.1em',
+                                          pointerEvents:'none', zIndex:10 }}>{label}</div>
+              ))}
+
+              <div style={{ position:'absolute', bottom:10, left:14, fontSize:9,
+                            color:'#0b1a28', pointerEvents:'none', zIndex:10 }}>
+                DRAG NODES TO REPOSITION · SCROLL TO ZOOM · CLICK TO INSPECT
+              </div>
+
+              {/* Viewport */}
+              <div style={{ transform:`translate(${pan.x}px,${pan.y}px) scale(${zoom})`,
+                            transformOrigin:'0 0', position:'relative', width:1100, height:590 }}>
+
+                {/* SVG connections */}
+                <svg width={1100} height={590} style={{ position:'absolute', inset:0, overflow:'visible', zIndex:1 }}>
+                  <defs>
+                    {Object.entries(DEFS).map(([type, d]) => (
+                      <marker key={type} id={`ar-${type}`} markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto">
+                        <polygon points="0 0,7 3.5,0 7" fill={d.c} opacity=".4"/>
+                      </marker>
+                    ))}
+                  </defs>
+                  {CONNS.map(cn => {
+                    const fa = agents.find(a => a.id === cn.from);
+                    const ta = agents.find(a => a.id === cn.to);
+                    if (!fa || !ta) return null;
+                    const fx = fa.x + NW/2, fy = fa.y + NH/2;
+                    const tx = ta.x + NW/2, ty = ta.y + NH/2;
+                    const mx = (fx + tx) / 2;
+                    const dp = `M${fx},${fy} C${mx},${fy} ${mx},${ty} ${tx},${ty}`;
+                    const col = DEFS[fa.type]?.c || '#00b89a';
+                    const flowing = fa.status === 'active' || fa.status === 'review';
+                    return (
+                      <g key={cn.id}>
+                        <path d={dp} fill="none" stroke="#0b1a2c" strokeWidth="2.5"/>
+                        <path d={dp} fill="none" stroke={col}
+                          strokeWidth={flowing ? 1.5 : 1}
+                          strokeOpacity={flowing ? .55 : .16}
+                          strokeDasharray="8 14"
+                          markerEnd={`url(#ar-${fa.type})`}
+                          style={flowing ? { animation:'FA 1.6s linear infinite' } : {}}/>
+                        <text x={(fx+tx)/2} y={(fy+ty)/2 - 9}
+                          textAnchor="middle" fontSize="8.5" fill="#1a3a58"
+                          style={{ fontFamily:'IBM Plex Sans,sans-serif', fontWeight:500 }}>{cn.lbl}</text>
+                      </g>
+                    );
+                  })}
+                </svg>
+
+                {/* Agent nodes */}
+                {agents.map(ag => {
+                  const def = DEFS[ag.type] || DEFS.intake;
+                  const st  = STAT[ag.status] || STAT.idle;
+                  const isSel = sel === ag.id;
+                  return (
+                    <div key={ag.id} className="ag"
+                      onMouseDown={e => onNdDown(e, ag.id)}
+                      style={{
+                        position:'absolute', left:ag.x, top:ag.y, width:NW, height:NH, zIndex:2,
+                        background: def.bg,
+                        border: `1px solid ${isSel ? def.c : def.bd}`,
+                        borderRadius: 6,
+                        boxShadow: isSel
+                          ? `0 0 0 1px ${def.c}40, 0 0 28px ${def.c}20, inset 0 0 10px ${def.c}06`
+                          : st.p ? `0 0 10px ${st.c}12` : 'none',
+                        padding: '10px 13px', display:'flex', flexDirection:'column', gap:5,
+                      }}>
+                      {st.p && (
+                        <div style={{ position:'absolute', inset:-5, borderRadius:9,
+                                      border:`1px solid ${st.c}28`,
+                                      animation:'PR 2.4s ease-out infinite', pointerEvents:'none' }}/>
+                      )}
+                      <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+                        <span style={{ color:def.c, fontSize:12, lineHeight:1 }}>{def.gl}</span>
+                        <span style={{ color:def.c, fontSize:8, letterSpacing:'.07em', fontWeight:600 }}>{def.role.toUpperCase()}</span>
+                        <div style={{ marginLeft:'auto', display:'flex', alignItems:'center', gap:4 }}>
+                          <div style={{ width:5, height:5, borderRadius:'50%', background:st.c,
+                                        animation:st.p?'BL 1.2s ease-in-out infinite':'none' }}/>
+                          <span style={{ fontSize:8, color:st.c, fontWeight:600 }}>{st.l}</span>
+                        </div>
+                      </div>
+                      <div style={{ fontSize:14, color:'#c8e8e0', fontWeight:600, lineHeight:1.2 }}>{ag.name}</div>
+                      <div style={{ display:'flex', gap:3, flexWrap:'wrap' }}>
+                        {ag.mcps.map(m => (
+                          <span key={m} style={{ fontSize:7, background:'#040c14',
+                                                 border:`1px solid ${def.bd}`, color:def.c,
+                                                 padding:'1px 5px', borderRadius:2, fontWeight:500 }}>⟷ {m}</span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* SIDE PANEL */}
+            <div style={{ width:222, background:'#060d18', borderLeft:'1px solid #0b1e30',
+                          display:'flex', flexDirection:'column', flexShrink:0, overflow:'hidden' }}>
+              {selAg ? (
+                <div style={{ flex:1, overflow:'auto', padding:14 }}>
+                  <div style={{ fontSize:9, color:'#1a4060', letterSpacing:'.09em', fontWeight:600, marginBottom:10 }}>▸ AGENT DETAIL</div>
+                  <div style={{ fontSize:22, color:DEFS[selAg.type]?.c, lineHeight:1, marginBottom:6 }}>{DEFS[selAg.type]?.gl}</div>
+                  <div style={{ fontSize:14, color:'#c8e8e0', fontWeight:600, marginBottom:1 }}>{selAg.name}</div>
+                  <div style={{ fontSize:9, color:'#1a4060', marginBottom:2 }}>{DEFS[selAg.type]?.role}</div>
+                  <Hr/>
+                  <Lbl>STATUS</Lbl>
+                  <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                    <div style={{ width:7, height:7, borderRadius:'50%',
+                                  background:(STAT[selAg.status]||STAT.idle).c,
+                                  animation:(STAT[selAg.status]||STAT.idle).p?'BL 1.2s ease-in-out infinite':'none' }}/>
+                    <span style={{ fontSize:10, color:(STAT[selAg.status]||STAT.idle).c, fontWeight:600 }}>
+                      {(STAT[selAg.status]||STAT.idle).l}
+                    </span>
+                  </div>
+                  {selAg.skills.length > 0 && <>
+                    <Lbl>CAPABILITIES</Lbl>
+                    {selAg.skills.map(s => (
+                      <div key={s} style={{ fontSize:9, color:'#3a6a8a', background:'#060d18',
+                                           border:'1px solid #0b1e30', padding:'3px 9px',
+                                           borderRadius:3, marginBottom:2 }}>{s}</div>
+                    ))}
+                  </>}
+                  {selAg.mcps.length > 0 && <>
+                    <Lbl>CONNECTED TOOLS</Lbl>
+                    {selAg.mcps.map(m => (
+                      <div key={m} style={{ fontSize:9, color:DEFS[selAg.type]?.c,
+                                           background:DEFS[selAg.type]?.bg,
+                                           border:`1px solid ${DEFS[selAg.type]?.bd}`,
+                                           padding:'3px 9px', borderRadius:3, marginBottom:2,
+                                           display:'flex', gap:6 }}>
+                        <span style={{ opacity:.4 }}>⟷</span>{m}
+                      </div>
+                    ))}
+                  </>}
+                  <Lbl>DATA LINKS</Lbl>
+                  {CONNS.filter(c => c.from === selAg.id || c.to === selAg.id).map(c => {
+                    const isF = c.from === selAg.id;
+                    const oth = agents.find(a => a.id === (isF ? c.to : c.from));
+                    if (!oth) return null;
+                    return (
+                      <div key={c.id} style={{ fontSize:9, color:'#1a3a58', display:'flex', gap:5, marginBottom:3 }}>
+                        <span style={{ color:isF?'#00b89a':'#818cf8' }}>{isF?'→':'←'}</span>
+                        <span style={{ color:DEFS[oth.type]?.c }}>{oth.name}</span>
+                        <span style={{ color:'#0b1e30' }}>:{c.lbl}</span>
+                      </div>
+                    );
+                  })}
+                  <Hr/>
+                  {['Pause Agent','View Calculation','Export Letter','Clone Agent'].map(a => (
+                    <button key={a} className="sbtn"
+                      style={{ width:'100%', textAlign:'left', fontSize:9, background:'#060d18',
+                               border:'1px solid #0b1e30', color:'#1a4060', padding:'6px 10px',
+                               borderRadius:3, marginBottom:3, letterSpacing:'.05em', cursor:'pointer',
+                               fontFamily:'inherit', fontWeight:500, opacity:1 }}>
+                      {a}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div style={{ flex:1, overflow:'auto', padding:14 }}>
+                  <div style={{ fontSize:9, color:'#1a4060', letterSpacing:'.09em', fontWeight:600, marginBottom:9 }}>▸ PIPELINE STAGES</div>
+                  {Object.entries(DEFS).map(([type, def]) => (
+                    <div key={type} className="rtype"
+                      style={{ '--hc': def.c + '55', display:'flex', alignItems:'center', gap:7,
+                               padding:'6px 9px', marginBottom:3, background:'#060d18',
+                               border:'1px solid #0b1e30', borderRadius:3, cursor:'pointer',
+                               fontSize:10, color:'#1a4060', fontWeight:500,
+                               transition:'border-color .12s' }}
+                      onMouseEnter={e => e.currentTarget.style.borderColor = def.c + '50'}
+                      onMouseLeave={e => e.currentTarget.style.borderColor = '#0b1e30'}>
+                      <span style={{ color:def.c }}>{def.gl}</span>
+                      <span>{def.role}</span>
+                      <span style={{ marginLeft:'auto', fontSize:7, color:'#0b1e30' }}>+ ADD</span>
+                    </div>
+                  ))}
+
+                  <Hr/>
+                  <div style={{ fontSize:9, color:'#1a4060', letterSpacing:'.09em', fontWeight:600, marginBottom:8 }}>▸ CONNECTED TOOLS</div>
+                  {['Filevine','DocuSign','Gmail','CMS Portal','MD Statutes','DC Regs','VA Code','QuickBooks','Notion'].map(m => (
+                    <div key={m} style={{ fontSize:9, color:'#0d2035', padding:'3px 5px',
+                                         display:'flex', alignItems:'center', gap:5,
+                                         borderBottom:'1px solid #060d18' }}>
+                      <span style={{ color:'#00b89a22', fontSize:8 }}>⟷</span>{m}
+                      <span style={{ marginLeft:'auto', fontSize:7, color:'#0b2640' }}>LIVE</span>
+                    </div>
+                  ))}
+
+                  <Hr/>
+                  <div style={{ fontSize:9, color:'#1a4060', letterSpacing:'.09em', fontWeight:600, marginBottom:8 }}>▸ CASE #4821 SNAPSHOT</div>
+                  {[
+                    ['Gross Settlement',  '$23,500',  '#c8e8e0'],
+                    ['Medicare MSP',      '$1,840',   '#f87171'],
+                    ['Hospital LOP',      '$680',     '#f87171'],
+                    ['After Ahlborn (MD)','$453',     '#00b89a'],
+                    ['LOP Negotiated',    '$420',     '#00b89a'],
+                    ['Est. Client Net',   '~$17,400', '#00d4b8'],
+                  ].map(([k, v, c]) => (
+                    <div key={k} style={{ display:'flex', justifyContent:'space-between',
+                                         padding:'3px 0', borderBottom:'1px solid #060d18', fontSize:9 }}>
+                      <span style={{ color:'#1a3a58' }}>{k}</span>
+                      <span style={{ color:c, fontWeight:600 }}>{v}</span>
+                    </div>
+                  ))}
+
+                  <Hr/>
+                  <a href="https://casezero.one/#early-access"
+                    style={{ display:'block', textAlign:'center', fontSize:10, fontWeight:600,
+                             background:'#00b89a', color:'#fff', padding:'9px',
+                             borderRadius:5, textDecoration:'none', letterSpacing:'.03em',
+                             boxShadow:'0 2px 10px rgba(0,184,154,.25)' }}>
+                    Request Access →
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* LOG */}
+          <div style={{ height:112, background:'#050b15', borderTop:'1px solid #0b1e30',
+                        display:'flex', flexDirection:'column', flexShrink:0 }}>
+            <div style={{ padding:'4px 16px', fontSize:9, color:'#0b1e30', letterSpacing:'.08em',
+                          fontWeight:600, borderBottom:'1px solid #060d18',
+                          display:'flex', alignItems:'center', gap:8 }}>
+              <span style={{ color:'#00b89a', fontSize:6, animation:'BL 2s ease-in-out infinite' }}>●</span>
+              RESOLUTION LOG
+              <span style={{ color:'#091828', fontWeight:400 }}>· {log.length} events · Case #4821 · Rodriguez v. State Farm</span>
+              <span style={{ marginLeft:'auto', color:'#091828' }}>
+                {new Date().toLocaleTimeString('en-US', {hour12:false})}
+              </span>
+            </div>
+            <div style={{ flex:1, overflow:'auto', padding:'4px 16px' }}>
+              {log.map((e, i) => (
+                <div key={i} style={{ fontSize:9, color:i===0?'#5a8aaa':'#162535',
+                                      padding:'2px 0', display:'flex', gap:10,
+                                      animation:i===0?'FI .3s ease-out':'none' }}>
+                  <span style={{ color:i===0?'#1a4060':'#0b1e30', flexShrink:0 }}>{e.t}</span>
+                  <span style={{ color:i===0?'#00b89a':'#0e2035' }}>›</span>
+                  <span>{e.m}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body>
+</html>
