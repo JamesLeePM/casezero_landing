@@ -1,3 +1,6 @@
+Index · HTML
+Copy
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,6 +109,48 @@
     .form-note { font-size:12px; color:rgba(255,255,255,.28); margin-top:12px; }
     #form-thanks { display:none; color:var(--teal); font-size:15px; margin-top:24px; font-weight:500; }
  
+    /* SCENARIOS */
+    .sc-tabs { display:flex; gap:8px; margin-bottom:28px; flex-wrap:wrap; }
+    .sc-tab { display:flex; align-items:center; gap:8px; padding:11px 18px; border-radius:8px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.03); color:rgba(255,255,255,.45); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer; transition:all .15s; }
+    .sc-tab:hover { border-color:rgba(0,184,154,.3); color:rgba(255,255,255,.75); }
+    .sc-tab.active { border-color:var(--teal); background:rgba(0,184,154,.08); color:var(--teal); font-weight:600; }
+    .sc-tab-icon { font-size:16px; }
+    .sc-panel { display:none; }
+    .sc-panel.active { display:block; animation:scIn .25s ease; }
+    @keyframes scIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    .sc-setup { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:12px; padding:28px 32px; margin-bottom:20px; }
+    .sc-who { font-size:14px; font-weight:600; color:rgba(255,255,255,.8); margin-bottom:12px; }
+    .sc-context { font-size:15px; color:rgba(255,255,255,.48); line-height:1.75; }
+    .sc-compare { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+    .sc-side { border-radius:12px; padding:28px; }
+    .sc-side.without { background:rgba(248,113,113,.04); border:1px solid rgba(248,113,113,.15); }
+    .sc-side.with    { background:rgba(0,184,154,.05);   border:1px solid rgba(0,184,154,.18); }
+    .sc-side-label { font-size:12px; font-weight:700; letter-spacing:.07em; margin-bottom:20px; }
+    .sc-side.without .sc-side-label { color:#f87171; }
+    .sc-side.with    .sc-side-label { color:var(--teal); }
+    .sc-steps-list { display:flex; flex-direction:column; gap:14px; }
+    .sc-step-item { display:grid; grid-template-columns:90px 1fr; gap:12px; align-items:start; }
+    .sc-step-time { font-size:11px; font-weight:600; color:rgba(255,255,255,.3); letter-spacing:.04em; padding-top:2px; }
+    .sc-step-desc { font-size:13px; color:rgba(255,255,255,.55); line-height:1.65; }
+    .sc-step-item.error .sc-step-time   { color:#f87171; }
+    .sc-step-item.error .sc-step-desc   { color:rgba(255,255,255,.75); }
+    .sc-step-item.success .sc-step-time { color:var(--teal); }
+    .sc-step-item.success .sc-step-desc { color:rgba(255,255,255,.75); }
+    .sc-verdict { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .sc-verdict-item { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:10px; padding:20px; }
+    .sc-verdict-item.highlight { background:rgba(0,184,154,.06); border-color:rgba(0,184,154,.2); }
+    .sc-verdict-label { display:block; font-size:11px; color:rgba(255,255,255,.35); font-weight:500; margin-bottom:6px; letter-spacing:.04em; }
+    .sc-verdict-val { font-size:18px; font-weight:700; color:#fff; }
+    .sc-verdict-val.teal { color:var(--teal); }
+    @media (max-width:780px) {
+      .sc-compare { grid-template-columns:1fr; }
+      .sc-verdict { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width:480px) {
+      .sc-verdict { grid-template-columns:1fr; }
+      .sc-tab-text { font-size:12px; }
+    }
+ 
     /* FOOTER */
     footer { padding:32px 48px; border-top:1px solid rgba(255,255,255,.06); display:flex; align-items:center; justify-content:space-between; font-size:13px; color:rgba(255,255,255,.22); }
     footer a { color:rgba(255,255,255,.28); text-decoration:none; }
@@ -191,6 +236,214 @@
           <p>Negotiation tracking, response logging, live disbursement waterfall showing exactly what the client takes home — updated in real time.</p>
         </div>
       </div>
+    </div>
+  </section>
+ 
+  <!-- SCENARIOS -->
+  <section id="scenarios" style="padding-top:0">
+    <div class="container">
+      <div class="section-label">Real scenarios</div>
+      <h2>See exactly what changes<br>at your firm.</h2>
+      <p class="section-sub">Pick a situation you recognize. We'll show you what happens without CaseZero — and what happens with it.</p>
+ 
+      <!-- Tabs -->
+      <div class="sc-tabs">
+        <button class="sc-tab active" onclick="showScenario(0)">
+          <span class="sc-tab-icon">📋</span>
+          <span class="sc-tab-text">Monday Morning Stack</span>
+        </button>
+        <button class="sc-tab" onclick="showScenario(1)">
+          <span class="sc-tab-icon">⚖️</span>
+          <span class="sc-tab-text">The Medicare Trap</span>
+        </button>
+        <button class="sc-tab" onclick="showScenario(2)">
+          <span class="sc-tab-icon">🔥</span>
+          <span class="sc-tab-text">Triple Lien Nightmare</span>
+        </button>
+      </div>
+ 
+      <!-- Scenario 0: Monday Morning -->
+      <div class="sc-panel active" id="sc-0">
+        <div class="sc-setup">
+          <div class="sc-who">👩 Maria, Paralegal — 8 cases settled this week. 3 have liens.</div>
+          <p class="sc-context">It's Monday. Maria walks in to find 8 newly settled cases on her desk. She opens the first file. Medicare lien. She opens the second. Hospital bill. Third one — another Medicare. She knows what this means: the next two days are gone.</p>
+        </div>
+        <div class="sc-compare">
+          <div class="sc-side without">
+            <div class="sc-side-label">❌ Without CaseZero</div>
+            <div class="sc-steps-list">
+              <div class="sc-step-item">
+                <div class="sc-step-time">9:00am</div>
+                <div class="sc-step-desc">Opens each file manually. Hunts for the lien letters buried in the case documents. Some are missing — calls the hospital billing department.</div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">11:30am</div>
+                <div class="sc-step-desc">Pulls up a spreadsheet. Tries to calculate the Medicare reduction. Googles "Ahlborn formula Maryland." Gets three different answers.</div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">2:00pm</div>
+                <div class="sc-step-desc">Drafts reduction letters from scratch using last year's template. Hopes the statute hasn't changed. Sends to attorney for review.</div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">4:30pm</div>
+                <div class="sc-step-desc">Attorney sends back two letters with corrections. Maria redrafts. Day is gone. 5 other cases untouched.</div>
+              </div>
+              <div class="sc-step-item error">
+                <div class="sc-step-time">Total</div>
+                <div class="sc-step-desc"><strong>7+ hours. $1,750 in paralegal cost. Calculations may still be wrong.</strong></div>
+              </div>
+            </div>
+          </div>
+          <div class="sc-side with">
+            <div class="sc-side-label">✓ With CaseZero</div>
+            <div class="sc-steps-list">
+              <div class="sc-step-item">
+                <div class="sc-step-time">9:00am</div>
+                <div class="sc-step-desc">CaseZero pulls all 3 lien cases from Filevine overnight. Lien amounts, types, and jurisdictions already identified.</div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">9:10am</div>
+                <div class="sc-step-desc">Ahlborn reductions calculated automatically for each Medicare lien. Hospital LOP negotiation floor set. All math shown with citations.</div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">9:18am</div>
+                <div class="sc-step-desc">Three reduction letters drafted and ready — formatted correctly for each lienholder. Maria reviews them in the queue.</div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">9:25am</div>
+                <div class="sc-step-desc">Attorney approves with one click. Letters go out. Disbursement waterfalls generated for all 3 cases. Done.</div>
+              </div>
+              <div class="sc-step-item success">
+                <div class="sc-step-time">Total</div>
+                <div class="sc-step-desc"><strong>25 minutes. $375 in paralegal time. Maria spends the rest of the day on intake.</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sc-verdict">
+          <div class="sc-verdict-item"><span class="sc-verdict-label">Time saved</span><span class="sc-verdict-val">6+ hours</span></div>
+          <div class="sc-verdict-item"><span class="sc-verdict-label">Labor saved</span><span class="sc-verdict-val">$1,375</span></div>
+          <div class="sc-verdict-item"><span class="sc-verdict-label">CaseZero cost</span><span class="sc-verdict-val">$1,500 <span style="font-size:13px;opacity:.6">(3 cases × $500)</span></span></div>
+          <div class="sc-verdict-item highlight"><span class="sc-verdict-label">Net firm savings</span><span class="sc-verdict-val teal">$875 + accurate</span></div>
+        </div>
+      </div>
+ 
+      <!-- Scenario 1: Medicare Trap -->
+      <div class="sc-panel" id="sc-1">
+        <div class="sc-setup">
+          <div class="sc-who">👨‍⚖️ David, Attorney — $85,000 settlement. Medicare says they're owed $4,200.</div>
+          <p class="sc-context">David's client was hit by a drunk driver. After two years of litigation, they settled for $85,000. The insurance policy limit was $100,000. Medicare paid $18,600 in medical bills during treatment and now they want $4,200 back from the settlement. Most attorneys just pay it. They shouldn't.</p>
+        </div>
+        <div class="sc-compare">
+          <div class="sc-side without">
+            <div class="sc-side-label">❌ Without CaseZero</div>
+            <div class="sc-steps-list">
+              <div class="sc-step-item">
+                <div class="sc-step-time">The problem</div>
+                <div class="sc-step-desc">Medicare is a federal lienholder. Federal law says their recovery must be proportionate to what the client actually recovered vs what they could have recovered. Almost no one does this math.</div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">What happens</div>
+                <div class="sc-step-desc">Paralegal sees "$4,200 Medicare lien." Writes a check for $4,200. Case closed. Client gets what's left.</div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">The reality</div>
+                <div class="sc-step-desc">The client settled for 85% of the policy limit. Under Ahlborn, Medicare is only entitled to 85% of what they paid — not the full amount. That's a $3,570 lien, not $4,200.</div>
+              </div>
+              <div class="sc-step-item error">
+                <div class="sc-step-time">Result</div>
+                <div class="sc-step-desc"><strong>Client overpays Medicare by $630. Happens on hundreds of cases a year. Nobody notices.</strong></div>
+              </div>
+            </div>
+          </div>
+          <div class="sc-side with">
+            <div class="sc-side-label">✓ With CaseZero</div>
+            <div class="sc-steps-list">
+              <div class="sc-step-item">
+                <div class="sc-step-time">Step 1</div>
+                <div class="sc-step-desc">CaseZero reads the settlement amount ($85,000), the policy limit ($100,000), and Medicare's claim ($4,200).</div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">Step 2</div>
+                <div class="sc-step-desc">Calculates the proration factor: $85,000 ÷ $100,000 = 85%. Applies it to Medicare's claim: $4,200 × 85% = <strong>$3,570.</strong></div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">Step 3</div>
+                <div class="sc-step-desc">Drafts the Ahlborn reduction letter to Medicare citing the correct federal statute. Attorney reviews. Sends it.</div>
+              </div>
+              <div class="sc-step-item success">
+                <div class="sc-step-time">Result</div>
+                <div class="sc-step-desc"><strong>Client keeps an extra $630. Attorney looks thorough. Letter took 18 minutes to generate.</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sc-verdict">
+          <div class="sc-verdict-item"><span class="sc-verdict-label">Medicare claimed</span><span class="sc-verdict-val">$4,200</span></div>
+          <div class="sc-verdict-item"><span class="sc-verdict-label">Correct amount owed</span><span class="sc-verdict-val">$3,570</span></div>
+          <div class="sc-verdict-item"><span class="sc-verdict-label">Money recovered for client</span><span class="sc-verdict-val teal">$630</span></div>
+          <div class="sc-verdict-item highlight"><span class="sc-verdict-label">Across 238 pipeline cases</span><span class="sc-verdict-val teal">$149,940 left on the table</span></div>
+        </div>
+      </div>
+ 
+      <!-- Scenario 2: Triple Lien -->
+      <div class="sc-panel" id="sc-2">
+        <div class="sc-setup">
+          <div class="sc-who">😰 Karen, Senior Paralegal — one case, three lienholders, three different rule sets.</div>
+          <p class="sc-context">Karen has been a paralegal for 11 years. She's seen everything. But this case makes her stomach drop: a client hit by a delivery truck, treated at a hospital on a Letter of Protection, covered by Medicare, and her health insurance is an ERISA self-funded plan through her employer. Three lienholders. Three completely different federal and state rules. One wrong move and the firm could be liable.</p>
+        </div>
+        <div class="sc-compare">
+          <div class="sc-side without">
+            <div class="sc-side-label">❌ Without CaseZero</div>
+            <div class="sc-steps-list">
+              <div class="sc-step-item">
+                <div class="sc-step-time">Lien 1: Medicare</div>
+                <div class="sc-step-desc">Federal law. Ahlborn proportionate-share reduction. Karen has to calculate the proration, write the letter, cite the statute. 90 minutes.</div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">Lien 2: Hospital LOP</div>
+                <div class="sc-step-desc">Maryland Letter of Protection. Negotiable. Karen has to know what the floor is, draft a counter-offer letter, track the back-and-forth. 2 hours.</div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">Lien 3: ERISA Plan</div>
+                <div class="sc-step-desc">This is the dangerous one. Is the plan fully-insured or self-funded? That single question determines whether the plan has full reimbursement rights or not. Karen calls the plan administrator. Waits two days for a callback. Wrong answer = malpractice exposure.</div>
+              </div>
+              <div class="sc-step-item error">
+                <div class="sc-step-time">Total</div>
+                <div class="sc-step-desc"><strong>6+ hours across 3 days. Attorney reviews everything twice. Still not 100% sure on ERISA. Hope for the best.</strong></div>
+              </div>
+            </div>
+          </div>
+          <div class="sc-side with">
+            <div class="sc-side-label">✓ With CaseZero</div>
+            <div class="sc-steps-list">
+              <div class="sc-step-item">
+                <div class="sc-step-time">Lien 1: Medicare</div>
+                <div class="sc-step-desc">Ahlborn calc runs automatically. Settlement-to-liability ratio applied. Reduction letter drafted with correct federal citation. 4 minutes.</div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">Lien 2: Hospital LOP</div>
+                <div class="sc-step-desc">CaseZero flags it as negotiable under Maryland law. Sets the negotiation floor based on comparable case data. Counter-offer letter drafted and ready. 6 minutes.</div>
+              </div>
+              <div class="sc-step-item">
+                <div class="sc-step-time">Lien 3: ERISA Plan</div>
+                <div class="sc-step-desc">CaseZero identifies the plan type from the summary plan description. Self-funded = full reimbursement rights, no reduction. Flags it clearly for attorney attention with the exact legal basis. No guessing. 8 minutes.</div>
+              </div>
+              <div class="sc-step-item success">
+                <div class="sc-step-time">Total</div>
+                <div class="sc-step-desc"><strong>20 minutes. All three lienholders handled correctly. Waterfall generated. Attorney signs off. Done.</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sc-verdict">
+          <div class="sc-verdict-item"><span class="sc-verdict-label">Lienholders handled</span><span class="sc-verdict-val">3</span></div>
+          <div class="sc-verdict-item"><span class="sc-verdict-label">Rule sets applied</span><span class="sc-verdict-val">Federal + MD + ERISA</span></div>
+          <div class="sc-verdict-item"><span class="sc-verdict-label">Time: without</span><span class="sc-verdict-val">6+ hours</span></div>
+          <div class="sc-verdict-item highlight"><span class="sc-verdict-label">Time: with CaseZero</span><span class="sc-verdict-val teal">20 minutes</span></div>
+        </div>
+      </div>
+ 
     </div>
   </section>
  
@@ -285,6 +538,12 @@
   </a>
  
  
+  <script>
+    function showScenario(n) {
+      document.querySelectorAll('.sc-tab').forEach((t,i)   => t.classList.toggle('active', i===n));
+      document.querySelectorAll('.sc-panel').forEach((p,i) => p.classList.toggle('active', i===n));
+    }
+  </script>
   <script>
     document.getElementById('access-form').addEventListener('submit', async function(e) {
       e.preventDefault();
