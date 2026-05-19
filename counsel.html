@@ -7,148 +7,169 @@
   <meta name="description" content="Demand letters, depo prep, settlement evals — first drafts in minutes. Built for plaintiff PI firms."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap" rel="stylesheet"/>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' stroke='%2300b89a' stroke-width='2' fill='none'/%3E%3Cline x1='10' y1='16' x2='22' y2='16' stroke='%2300b89a' stroke-width='2' stroke-linecap='round'/%3E%3Cline x1='16' y1='11' x2='16' y2='22' stroke='%2300b89a' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"/>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--navy:#0b1628;--navy2:#0f1e35;--teal:#00b89a;--gold:#b8922a;--cream:#faf8f4;--cream2:#f2efe8}
-    html,body{height:100%;font-family:'DM Sans','Segoe UI',sans-serif;background:var(--navy);overflow:hidden}
+    :root{
+      --navy:#0f1f3d; --navy2:#1a2f52;
+      --teal:#00b89a;
+      --gold:#b8922a; --gold-light:#f0d98a;
+      --cream:#faf8f4; --cream2:#f2efe8;
+    }
+    html,body{height:100%;overflow:hidden;background:var(--navy)}
+    body{font-family:'DM Sans','Segoe UI',sans-serif;font-size:13px;color:#334155}
  
     /* ── TOP NAV ── */
-    #topnav{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(11,22,40,.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,184,154,.12);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:100}
-    .tn-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
-    .tn-mark{width:28px;height:28px;background:rgba(0,184,154,.1);border:1px solid rgba(0,184,154,.28);border-radius:6px;display:flex;align-items:center;justify-content:center}
-    .tn-name{font-size:13px;font-weight:700;color:#fff;letter-spacing:.08em}
-    .tn-badge{font-size:9px;font-weight:700;color:var(--gold);letter-spacing:.12em}
+    #topnav{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(15,31,61,.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,184,154,.15);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:200}
+    .tn-logo{display:flex;align-items:center;gap:9px;text-decoration:none}
+    .tn-mark{width:28px;height:28px;background:rgba(0,184,154,.12);border:1px solid rgba(0,184,154,.3);border-radius:6px;display:flex;align-items:center;justify-content:center}
+    .tn-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:600;color:#fff;letter-spacing:.04em}
+    .tn-badge{font-size:9px;font-weight:700;color:var(--gold);letter-spacing:.1em;font-family:'DM Sans',sans-serif}
     .tn-links{display:flex;align-items:center;gap:18px}
     .tn-links a{font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;font-weight:500;transition:color .15s}
     .tn-links a:hover{color:var(--teal)}
     .tn-cta{background:var(--teal)!important;color:var(--navy)!important;padding:6px 16px;border-radius:6px;font-weight:700!important}
  
-    /* ── SHELL ── */
+    /* ── APP SHELL ── */
     #app{display:flex;height:100vh;padding-top:48px}
  
     /* ── SIDEBAR ── */
-    #sidebar{width:224px;background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;border-right:1px solid rgba(255,255,255,.06)}
-    .sb-head{padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
-    .sb-logo{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-    .sb-mark{width:30px;height:30px;background:rgba(0,184,154,.15);border:1px solid rgba(0,184,154,.3);border-radius:7px;display:flex;align-items:center;justify-content:center}
-    .sb-title{font-size:13px;font-weight:700;color:#fff;letter-spacing:.08em}
-    .sb-sub{font-size:9px;font-weight:700;color:var(--gold);letter-spacing:.12em}
-    .sb-desc{font-size:10px;color:rgba(255,255,255,.25);line-height:1.5}
-    .demo-badge{margin:10px 14px 0;background:rgba(184,146,42,.1);border:1px solid rgba(184,146,42,.25);border-radius:6px;padding:7px 10px}
-    .demo-badge-label{font-size:9px;font-weight:700;color:var(--gold);letter-spacing:.1em;margin-bottom:2px}
-    .demo-badge-text{font-size:10px;color:rgba(255,255,255,.35);line-height:1.4}
-    .sb-section-label{font-size:9px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.22);padding:12px 18px 4px}
-    .tool-btn{width:100%;text-align:left;background:transparent;border:none;border-left:3px solid transparent;padding:10px 18px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .12s}
-    .tool-btn:hover{background:rgba(255,255,255,.06)}
-    .tool-btn.active{background:rgba(0,184,154,.1);border-left-color:var(--teal)}
-    .tool-btn .icon{font-size:15px;opacity:.45}
-    .tool-btn.active .icon{opacity:1}
-    .tool-btn .name{font-size:13px;font-weight:400;color:rgba(255,255,255,.5)}
-    .tool-btn.active .name{font-weight:600;color:#fff}
-    .tool-btn .done{font-size:10px;color:var(--teal);opacity:.7;margin-left:auto}
-    .sb-foot{padding:12px 18px;border-top:1px solid rgba(255,255,255,.07);margin-top:auto}
-    .sb-cta{display:block;text-align:center;font-size:12px;font-weight:700;color:var(--navy);background:var(--teal);padding:9px;border-radius:6px;text-decoration:none;margin-bottom:8px;transition:background .15s}
-    .sb-cta:hover{background:#009e85}
-    .sb-back{font-size:10px;color:rgba(255,255,255,.25);text-align:center;display:block}
+    #sidebar{width:232px;background:var(--navy);display:flex;flex-direction:column;flex-shrink:0}
+    .sb-head{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
+    .sb-wordmark{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:.05em;margin-bottom:1px}
+    .sb-sub{font-size:9px;font-weight:700;color:var(--gold);letter-spacing:.14em;font-family:'DM Sans',sans-serif}
+    .sb-tagline{font-size:11px;color:rgba(255,255,255,.28);margin-top:6px;line-height:1.4}
+    .demo-strip{margin:10px 14px 0;background:rgba(184,146,42,.08);border:1px solid rgba(184,146,42,.22);border-radius:5px;padding:7px 10px}
+    .demo-strip-label{font-size:9px;font-weight:700;color:var(--gold);letter-spacing:.1em;margin-bottom:2px}
+    .demo-strip-text{font-size:10px;color:rgba(255,255,255,.35);line-height:1.4}
+    .sb-label{font-size:9px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.2);padding:14px 18px 5px;font-family:'DM Sans',sans-serif}
+    .tool-btn{width:100%;text-align:left;background:transparent;border:none;border-left:3px solid transparent;padding:11px 18px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s,border-color .12s;font-family:inherit}
+    .tool-btn:hover{background:rgba(255,255,255,.05)}
+    .tool-btn.active{background:rgba(0,184,154,.09);border-left-color:var(--gold)}
+    .tool-icon{font-size:15px;opacity:.4;transition:opacity .12s}
+    .tool-btn.active .tool-icon{opacity:1}
+    .tool-name{font-size:13px;color:rgba(255,255,255,.5);transition:color .12s;font-weight:400}
+    .tool-btn.active .tool-name{color:#fff;font-weight:600}
+    .tool-done{font-size:11px;color:var(--teal);margin-left:auto;opacity:0;transition:opacity .2s}
+    .tool-done.show{opacity:.8}
+    .sb-footer{padding:14px 18px;border-top:1px solid rgba(255,255,255,.07);margin-top:auto}
+    .sb-cta-btn{display:block;text-align:center;font-size:13px;font-weight:700;color:var(--cream);background:var(--navy2);border:1px solid rgba(0,184,154,.35);padding:10px;border-radius:6px;text-decoration:none;margin-bottom:8px;transition:background .15s}
+    .sb-cta-btn:hover{background:var(--teal);color:var(--navy);border-color:var(--teal)}
+    .sb-back{font-size:11px;color:rgba(255,255,255,.25);text-align:center}
     .sb-back a{color:var(--gold);text-decoration:none}
  
     /* ── MAIN ── */
-    #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-    #tool-header{padding:13px 26px;background:#fff;border-bottom:1px solid #e8e2d8;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-    #tool-title{font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;color:var(--navy)}
-    #tool-desc{font-size:12px;color:#94a3b8;margin-top:2px}
-    .header-badge{font-size:11px;color:#94a3b8;background:var(--cream2);border:1px solid #e2ddd5;padding:5px 12px;border-radius:6px;white-space:nowrap}
+    #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
  
-    /* ── COLUMNS ── */
-    #columns{flex:1;display:grid;grid-template-columns:390px 1fr;overflow:hidden}
+    /* Tool header */
+    #tool-header{padding:14px 28px;background:#fff;border-bottom:1px solid #e2ddd5;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:16px}
+    #tool-header-left{}
+    #tool-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:500;color:var(--navy);line-height:1}
+    #tool-desc{font-size:12px;color:#94a3b8;margin-top:3px}
+    .demo-pill{font-size:11px;color:#94a3b8;background:var(--cream2);border:1px solid #e2ddd5;padding:5px 12px;border-radius:100px;white-space:nowrap;flex-shrink:0}
+ 
+    /* Two-column layout */
+    #columns{flex:1;display:grid;grid-template-columns:45% 55%;overflow:hidden}
  
     /* ── FORM PANEL ── */
-    #form-panel{border-right:1px solid #e8e2d8;overflow-y:auto;padding:20px 24px;background:#fff;display:flex;flex-direction:column;gap:14px}
-    .case-badge{background:var(--navy);border-radius:8px;padding:14px 16px;margin-bottom:2px}
-    .case-badge-label{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--teal);margin-bottom:4px}
-    .case-badge-title{font-size:14px;font-weight:600;color:#fff;line-height:1.4}
-    .case-badge-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:3px}
-    .field-label{font-size:11px;font-weight:600;color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
-    .field-val{font-size:13px;color:#334155;line-height:1.65;background:var(--cream2);border:1px solid #e2ddd5;border-radius:6px;padding:8px 12px;white-space:pre-wrap}
-    #gen-btn{padding:13px;border-radius:7px;border:none;background:var(--teal);color:#fff;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;font-family:inherit;margin-top:4px}
-    #gen-btn:hover{background:#009e85}
-    #gen-btn:disabled{background:#94a3b8;cursor:not-allowed}
-    .access-hint{background:#f8fafc;border:1px solid #e2ddd5;border-left:3px solid var(--gold);border-radius:6px;padding:12px 14px;font-size:12px;color:#64748b;line-height:1.65}
-    .access-hint strong{color:var(--navy)}
-    .access-hint a{color:var(--teal);font-weight:600;text-decoration:none}
+    #form-panel{border-right:1px solid #e2ddd5;overflow-y:auto;padding:22px 24px;background:#fff;display:flex;flex-direction:column;gap:0}
+    .field-group{margin-bottom:14px}
+    .field-label{display:block;font-size:11px;font-weight:700;color:#475569;letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px}
+    .field-label .req{color:var(--gold);margin-left:1px}
+    .field-label .opt{color:#94a3b8;font-weight:400;text-transform:none;letter-spacing:0;font-size:11px}
+    .field-input,.field-textarea,.field-select{
+      width:100%;padding:9px 12px;border:1px solid #ddd6cc;border-radius:6px;
+      font-size:13px;font-family:inherit;color:#1e293b;background:#fff;
+      transition:border-color .15s,box-shadow .15s;outline:none;
+    }
+    .field-input:focus,.field-textarea:focus,.field-select:focus{
+      border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,184,154,.1);
+    }
+    .field-textarea{resize:vertical;line-height:1.6;min-height:80px}
+    .field-select{height:38px;cursor:pointer}
+    #gen-btn{
+      width:100%;padding:13px;margin-top:6px;border:none;border-radius:7px;
+      background:var(--navy);color:var(--cream);font-size:14px;font-weight:700;
+      font-family:inherit;cursor:pointer;display:flex;align-items:center;
+      justify-content:center;gap:8px;transition:background .15s;
+    }
+    #gen-btn:hover:not(:disabled){background:var(--navy2)}
+    #gen-btn:disabled{opacity:.55;cursor:not-allowed}
+    .form-hint{margin-top:12px;padding:12px 14px;background:var(--cream2);border:1px solid #e2ddd5;border-left:3px solid var(--gold);border-radius:6px;font-size:12px;color:#64748b;line-height:1.65}
+    .form-hint strong{color:var(--navy)}
+    .form-hint a{color:var(--teal);font-weight:600;text-decoration:none}
  
     /* ── OUTPUT PANEL ── */
-    #output-panel{overflow:hidden;display:flex;flex-direction:column;background:var(--cream)}
-    #output-header{padding:11px 22px;border-bottom:1px solid #e2ddd5;display:flex;align-items:center;justify-content:space-between;background:var(--cream2);flex-shrink:0}
-    #output-status{font-size:12px;font-weight:600;color:#475569;letter-spacing:.06em}
-    #output-status .live{color:var(--teal);font-weight:400;font-size:11px}
-    #output-status .done-dot{color:#22c55e;font-weight:400;font-size:11px}
-    #output-actions{display:flex;gap:8px}
-    .copy-btn,#use-btn{font-size:12px;font-weight:600;border:1px solid #ddd6cc;border-radius:5px;padding:5px 12px;cursor:pointer;transition:background .12s;font-family:inherit}
-    .copy-btn{color:#475569;background:transparent}
-    .copy-btn:hover{background:#e2ded6}
-    #use-btn{color:var(--navy);background:var(--gold);border-color:var(--gold)}
-    #use-btn:hover{opacity:.85}
-    #output-body{flex:1;overflow-y:auto;padding:22px 26px}
+    #output-panel{background:var(--cream);display:flex;flex-direction:column;overflow:hidden}
+    #output-header{padding:11px 22px;background:var(--cream2);border-bottom:1px solid #e2ddd5;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px}
+    #output-label{font-size:11px;font-weight:700;color:#475569;letter-spacing:.08em;display:flex;align-items:center;gap:7px}
+    .status-dot{font-size:11px;font-weight:400;letter-spacing:0}
+    .status-live{color:var(--teal)}
+    .status-done{color:#22c55e}
+    #output-btns{display:none;gap:8px}
+    .copy-btn{font-size:12px;font-weight:600;color:#475569;background:transparent;border:1px solid #ddd6cc;border-radius:5px;padding:5px 12px;cursor:pointer;font-family:inherit;transition:background .12s}
+    .copy-btn:hover{background:#e8e2d8}
+    .use-btn{font-size:12px;font-weight:700;color:var(--navy);background:var(--gold);border:1px solid var(--gold);border-radius:5px;padding:5px 14px;cursor:pointer;font-family:inherit;transition:opacity .12s}
+    .use-btn:hover{opacity:.85}
+    #output-body{flex:1;overflow-y:auto;padding:24px 26px}
  
-    /* Output empty state */
-    #empty-state{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-    #empty-icon{font-size:48px;opacity:.18;margin-bottom:18px}
-    #empty-title{font-family:'DM Serif Display',serif;font-size:22px;color:#94a3b8;margin-bottom:10px}
-    #empty-text{font-size:14px;color:#cbd5e1;max-width:280px;line-height:1.65;margin-bottom:24px}
-    #empty-btn{padding:12px 28px;border-radius:7px;border:none;background:var(--teal);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
-    #empty-btn:hover{background:#009e85}
+    /* Empty state */
+    #empty-state{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+    .empty-icon{font-size:48px;opacity:.15;margin-bottom:18px}
+    .empty-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#94a3b8;margin-bottom:10px}
+    .empty-text{font-size:14px;color:#cbd5e1;max-width:280px;line-height:1.65;margin-bottom:24px}
+    .empty-btn{padding:12px 28px;border-radius:7px;border:none;background:var(--navy);color:var(--cream);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+    .empty-btn:hover{background:var(--navy2)}
  
-    /* Output generating */
-    #gen-state{display:none;align-items:center;gap:12px;color:#94a3b8;font-size:14px;padding:48px 0}
+    /* Generating */
+    #gen-state{display:none;align-items:center;gap:12px;padding:48px 0;color:#94a3b8;font-size:14px}
     .spin{width:18px;height:18px;border:2px solid #e2ddd5;border-top-color:var(--teal);border-radius:50%;animation:spin 1s linear infinite;flex-shrink:0}
     @keyframes spin{to{transform:rotate(360deg)}}
  
     /* Output content */
     #output-content{display:none}
-    .output-watermark{display:flex;align-items:center;gap:6px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #e8e2d8;font-size:10px;color:#94a3b8}
-    .output-watermark .brand{font-weight:600;letter-spacing:.1em;color:var(--teal)}
-    .output-watermark .dot{width:3px;height:3px;border-radius:50%;background:#cbd5e1}
-    #output-text{font-size:13.5px;line-height:1.8;color:#334155}
-    #output-text p{margin:3px 0}
-    #output-text .section-head{font-size:13px;font-weight:700;color:var(--navy);letter-spacing:.02em;margin-top:18px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #e8e2d8}
-    #output-text .key-badge{background:var(--gold);color:#fff;font-size:10px;padding:1px 6px;border-radius:3px;font-weight:700;margin:0 3px;vertical-align:middle}
-    #output-text .causation-badge{background:var(--navy);color:var(--teal);font-size:10px;padding:1px 6px;border-radius:3px;font-weight:700;margin:0 3px;vertical-align:middle}
-    #output-text .warn{display:flex;gap:8px;align-items:flex-start;margin:5px 0;background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:7px 10px;font-size:13px;color:#92400e}
-    #output-text .check{display:flex;gap:8px;align-items:flex-start;margin:3px 0;font-size:13px}
-    #output-text .check-icon{color:var(--teal);flex-shrink:0}
+    .output-meta{display:flex;align-items:center;gap:6px;padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid #e8e2d8;font-size:10px;color:#94a3b8}
+    .output-meta .brand{font-weight:700;letter-spacing:.1em;color:var(--teal)}
+    .output-meta .sep{width:3px;height:3px;border-radius:50%;background:#cbd5e1}
+    #output-text .sec{font-size:13px;font-weight:700;color:var(--navy);margin-top:18px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #e8e2d8;letter-spacing:.02em}
+    #output-text p{font-size:13.5px;line-height:1.8;color:#334155;margin:3px 0}
+    #output-text strong{color:#1e293b;font-weight:700}
+    #output-text em{color:#475569;font-style:italic}
+    #output-text .key{background:var(--gold);color:#fff;font-size:10px;padding:1px 6px;border-radius:3px;font-weight:700;margin:0 3px;vertical-align:middle;font-family:'DM Sans',sans-serif}
+    #output-text .caus{background:var(--navy);color:var(--teal);font-size:10px;padding:1px 6px;border-radius:3px;font-weight:700;margin:0 3px;vertical-align:middle;font-family:'DM Sans',sans-serif}
+    #output-text .perm{background:#4f46e5;color:#fff;font-size:10px;padding:1px 6px;border-radius:3px;font-weight:700;margin:0 3px;vertical-align:middle;font-family:'DM Sans',sans-serif}
+    #output-text .warn-row{display:flex;gap:8px;align-items:flex-start;margin:5px 0;background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:7px 10px;font-size:13px;color:#92400e}
+    #output-text .chk-row{display:flex;gap:8px;align-items:flex-start;margin:3px 0;font-size:13px;color:#334155}
+    #output-text .chk-icon{color:var(--teal);flex-shrink:0;margin-top:1px}
     #output-text table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
-    #output-text table th{background:var(--navy);color:#fff;padding:8px 12px;text-align:left;font-weight:600}
-    #output-text table td{padding:7px 12px;border-bottom:1px solid #e8e2d8;color:#475569}
-    #output-text table tr:hover td{background:#f8fafc}
+    #output-text thead th{background:var(--navy);color:#fff;padding:8px 12px;text-align:left;font-weight:600;font-size:12px}
+    #output-text tbody td{padding:7px 12px;border-bottom:1px solid #e8e2d8;color:#475569}
+    #output-text tbody tr:last-child td{border-bottom:none}
     #cursor{display:inline-block;width:2px;height:14px;background:var(--navy);animation:blink .8s ease-in-out infinite;vertical-align:middle;margin-left:2px}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-    .output-disclaimer{margin-top:24px;padding:13px 16px;background:#fff;border:1px solid #e8e2d8;border-left:3px solid var(--gold);border-radius:6px;font-size:12px;color:#64748b;line-height:1.65}
-    .output-disclaimer strong{color:var(--navy)}
-    .output-disclaimer a{color:var(--teal);font-weight:600;text-decoration:none}
-    .output-ai-note{margin-top:10px;padding:12px 16px;background:rgba(11,22,40,.03);border:1px solid rgba(11,22,40,.08);border-radius:6px;font-size:11px;color:#94a3b8;line-height:1.6}
+    .out-disclaimer{margin-top:24px;padding:13px 16px;background:#fff;border:1px solid #e8e2d8;border-left:3px solid var(--gold);border-radius:6px;font-size:12px;color:#64748b;line-height:1.65;display:none}
+    .out-disclaimer strong{color:var(--navy)}
+    .out-disclaimer a{color:var(--teal);font-weight:600;text-decoration:none}
+    .out-ai{margin-top:8px;padding:10px 14px;background:rgba(15,31,61,.04);border:1px solid rgba(15,31,61,.08);border-radius:6px;font-size:11px;color:#94a3b8;line-height:1.6;display:none}
  
     /* ── MODAL ── */
-    #modal{position:fixed;inset:0;background:rgba(11,22,40,.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:9000;padding:24px}
-    #modal.show{display:flex}
-    .modal-box{background:#fff;border-radius:16px;padding:44px 48px;max-width:460px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.3)}
-    .modal-tag{font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--teal);margin-bottom:12px}
-    .modal-title{font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);line-height:1.2;margin-bottom:12px}
-    .modal-desc{font-size:14px;color:#64748b;line-height:1.75;margin-bottom:20px}
-    .modal-list{background:#f8fafc;border:1px solid #e2ddd5;border-radius:10px;padding:16px 20px;margin-bottom:28px;font-size:13px;color:#475569}
-    .modal-list div{margin-bottom:6px}
-    .modal-list div:last-child{margin-bottom:0}
-    .modal-cta{display:block;padding:14px;background:var(--teal);color:#fff;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;text-align:center;margin-bottom:10px}
-    .modal-close{width:100%;padding:10px;background:transparent;border:1px solid #e2ddd5;border-radius:8px;font-size:13px;color:#94a3b8;cursor:pointer;font-family:inherit}
-    .modal-close:hover{background:#f8fafc}
+    #modal{position:fixed;inset:0;background:rgba(15,31,61,.82);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:9000;padding:24px}
+    #modal.open{display:flex}
+    .modal-card{background:#fff;border-radius:16px;padding:44px 48px;max-width:460px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.3)}
+    .modal-tag{font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--teal);margin-bottom:12px;font-family:'DM Sans',sans-serif}
+    .modal-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--navy);line-height:1.25;margin-bottom:12px}
+    .modal-body{font-size:14px;color:#64748b;line-height:1.75;margin-bottom:20px}
+    .modal-list{background:var(--cream2);border:1px solid #e2ddd5;border-radius:10px;padding:16px 20px;margin-bottom:28px;font-size:13px;color:#475569;display:flex;flex-direction:column;gap:6px}
+    .modal-cta{display:block;padding:14px;background:var(--teal);color:#fff;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;text-align:center;margin-bottom:10px;transition:background .15s}
+    .modal-cta:hover{background:#009e85}
+    .modal-back{width:100%;padding:10px;background:transparent;border:1px solid #e2ddd5;border-radius:8px;font-size:13px;color:#94a3b8;cursor:pointer;font-family:inherit;transition:background .15s}
+    .modal-back:hover{background:var(--cream2)}
  
-    /* ── SCROLL ── */
     ::-webkit-scrollbar{width:4px}
     ::-webkit-scrollbar-track{background:transparent}
     ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
   </style>
 </head>
 <body>
@@ -157,7 +178,7 @@
 <nav id="topnav">
   <a href="/" class="tn-logo">
     <div class="tn-mark">
-      <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+      <svg width="15" height="15" viewBox="0 0 18 18" fill="none">
         <circle cx="9" cy="9" r="7.5" stroke="#00b89a" stroke-width="1.4"/>
         <rect x="5.5" y="4.2" width="5" height="6.6" rx="1" stroke="#00b89a" stroke-width="1.1" fill="none"/>
         <line x1="5.5" y1="6.8" x2="9.5" y2="6.8" stroke="#00d4b8" stroke-width="1.1"/>
@@ -166,7 +187,9 @@
         <line x1="13.2" y1="14.2" x2="14.8" y2="15.8" stroke="#00b89a" stroke-width="1.4" stroke-linecap="round"/>
       </svg>
     </div>
-    <div><div class="tn-name">CASEZERO <span class="tn-badge">COUNSEL</span></div></div>
+    <div>
+      <div class="tn-name">CaseZero <span class="tn-badge">COUNSEL</span></div>
+    </div>
   </a>
   <div class="tn-links">
     <a href="/">&#8592; casezero.one</a>
@@ -176,38 +199,21 @@
   </div>
 </nav>
  
-<!-- APP -->
 <div id="app">
- 
   <!-- SIDEBAR -->
   <div id="sidebar">
     <div class="sb-head">
-      <div class="sb-logo">
-        <div class="sb-mark">
-          <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
-            <circle cx="9" cy="9" r="7.5" stroke="#00b89a" stroke-width="1.4"/>
-            <rect x="5.5" y="4.2" width="5" height="6.6" rx="1" stroke="#00b89a" stroke-width="1.1" fill="none"/>
-            <line x1="5.5" y1="6.8" x2="9.5" y2="6.8" stroke="#00d4b8" stroke-width="1.1"/>
-            <line x1="5.5" y1="8.8" x2="9.5" y2="8.8" stroke="#00d4b8" stroke-width=".9"/>
-            <circle cx="11.5" cy="12.5" r="2.4" stroke="#00b89a" stroke-width="1.1" fill="none"/>
-            <line x1="13.2" y1="14.2" x2="14.8" y2="15.8" stroke="#00b89a" stroke-width="1.4" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div>
-          <div class="sb-title">CASEZERO</div>
-          <div class="sb-sub">COUNSEL</div>
-        </div>
-      </div>
-      <div class="sb-desc">AI Drafting Suite for PI Plaintiff Firms</div>
+      <div class="sb-wordmark">CaseZero <span class="sb-sub">COUNSEL</span></div>
+      <div class="sb-tagline">AI Drafting Suite<br/>for PI Plaintiff Firms</div>
     </div>
-    <div class="demo-badge">
-      <div class="demo-badge-label">LIVE DEMO</div>
-      <div class="demo-badge-text">Real case. Real output.<br/>Request access to use your own cases.</div>
+    <div class="demo-strip">
+      <div class="demo-strip-label">LIVE DEMO</div>
+      <div class="demo-strip-text">Edit the fields. Click Generate.<br/>Request access to save your drafts.</div>
     </div>
-    <div class="sb-section-label">WORKFLOW TOOLS</div>
+    <div class="sb-label">WORKFLOW TOOLS</div>
     <div id="tool-list"></div>
-    <div class="sb-foot">
-      <a href="/#early-access" class="sb-cta">Request Access &#8594;</a>
+    <div class="sb-footer">
+      <a href="/#early-access" class="sb-cta-btn">Request Early Access &#8594;</a>
       <div class="sb-back"><a href="/">&#8592; casezero.one</a></div>
     </div>
   </div>
@@ -215,65 +221,67 @@
   <!-- MAIN -->
   <div id="main">
     <div id="tool-header">
-      <div>
+      <div id="tool-header-left">
         <div id="tool-title">Demand Letter</div>
         <div id="tool-desc">Professional demand to insurer — liability, damages, settlement figure.</div>
       </div>
-      <div class="header-badge">Demo &middot; Real case data &middot; AI-generated output</div>
+      <div class="demo-pill">Demo &middot; Pre-filled with sample case &middot; Edit freely</div>
     </div>
  
     <div id="columns">
-      <!-- Form -->
+      <!-- Form panel -->
       <div id="form-panel">
-        <div class="case-badge">
-          <div class="case-badge-label">SAMPLE CASE</div>
-          <div class="case-badge-title" id="case-title">Rodriguez v. Whitfield / State Farm</div>
-          <div class="case-badge-sub" id="case-sub">MVA &middot; Bethesda MD &middot; L4-L5 Herniation</div>
-        </div>
-        <div id="fields-container"></div>
-        <button id="gen-btn" onclick="generate()">Generate Draft &#8599;</button>
-        <div class="access-hint">
-          <strong>Using your own cases?</strong><br/>
-          Request early access to generate with your actual client facts.
-          <a href="/#early-access">Request access &#8594;</a>
-        </div>
+        <form id="tool-form" onsubmit="return false">
+          <div id="fields-container"></div>
+          <button type="submit" id="gen-btn" onclick="generate()">
+            Generate Draft &#8599;
+          </button>
+          <div class="form-hint">
+            <strong>This is a demo.</strong> Edit the fields above — the output is pre-generated to show what CaseZero Counsel produces.
+            <a href="/#early-access">Request access to generate from your own cases &#8594;</a>
+          </div>
+        </form>
       </div>
  
-      <!-- Output -->
+      <!-- Output panel -->
       <div id="output-panel">
         <div id="output-header">
-          <div id="output-status">OUTPUT</div>
-          <div id="output-actions" style="display:none">
-            <button class="copy-btn" onclick="copyOutput()">Copy</button>
-            <button id="use-btn" onclick="showModal()">Use with my cases &#8594;</button>
+          <div id="output-label">
+            OUTPUT
+            <span class="status-dot status-live" id="status-live" style="display:none">&#9679; generating</span>
+            <span class="status-dot status-done" id="status-done" style="display:none">&#9679; complete</span>
+          </div>
+          <div id="output-btns">
+            <button class="copy-btn" onclick="copyOut()">Copy</button>
+            <button class="use-btn" onclick="openModal()">Use with my cases &#8594;</button>
           </div>
         </div>
         <div id="output-body">
           <div id="empty-state">
-            <div id="empty-icon">&#9993;</div>
-            <div id="empty-title">See it in action.</div>
-            <div id="empty-text">The case facts are loaded. Hit Generate to watch Claude draft your document in real time.</div>
-            <button id="empty-btn" onclick="generate()">Generate Draft &#8599;</button>
+            <div class="empty-icon" id="empty-icon">&#9993;</div>
+            <div class="empty-title">Ready to draft.</div>
+            <div class="empty-text" id="empty-text">The fields are pre-filled with a sample case. Edit them or click Generate to see what CaseZero Counsel produces.</div>
+            <button class="empty-btn" onclick="generate()">Generate Draft &#8599;</button>
           </div>
           <div id="gen-state">
             <div class="spin"></div>
             <span id="gen-msg">Claude is drafting your demand letter&hellip;</span>
           </div>
           <div id="output-content">
-            <div class="output-watermark">
+            <div class="output-meta">
               <span class="brand">CASEZERO COUNSEL</span>
-              <span class="dot"></span>
+              <span class="sep"></span>
               <span id="wm-tool">Demand Letter</span>
-              <span class="dot"></span>
+              <span class="sep"></span>
               <span id="wm-date"></span>
             </div>
             <div id="output-text"></div>
-            <span id="cursor"></span>
-            <div class="output-disclaimer" style="display:none" id="disclaimer">
-              <strong>Demo output.</strong> This draft was generated from sample case data to demonstrate CaseZero Counsel's capabilities. Early access firms generate with their own cases.
+            <span id="cursor" style="display:none"></span>
+            <div class="out-disclaimer" id="out-disclaimer">
+              <strong>Demo output.</strong> This draft was generated from sample case data to show CaseZero Counsel's capabilities. Early access firms generate with their own cases.
               <a href="/#early-access">Request access &#8594;</a>
             </div>
-            <div class="output-ai-note" style="display:none" id="ai-note">
+            <div class="out-ai" id="out-ai">
               AI-generated draft. All output must be reviewed by a licensed attorney before use. Not legal advice.
             </div>
           </div>
@@ -285,410 +293,416 @@
  
 <!-- MODAL -->
 <div id="modal">
-  <div class="modal-box">
+  <div class="modal-card">
     <div class="modal-tag">CASEZERO COUNSEL</div>
-    <div class="modal-title">This is a live demo.<br/>Yours starts with early access.</div>
-    <div class="modal-desc">What you just saw was generated from real case facts using the same AI engine your firm would use. Early access firms get all 6 tools, unlimited drafts, plus CaseZero's full lien resolution suite.</div>
+    <div class="modal-title" id="modal-title">This is a live demo.<br/>Yours starts here.</div>
+    <div class="modal-body">What you just generated was produced by the same AI engine your firm would use. Early access firms get all 6 tools, unlimited drafts, and CaseZero's full lien resolution suite.</div>
     <div class="modal-list">
-      <div>&#10003; All 6 drafting tools &mdash; unlimited</div>
+      <div>&#10003; All 6 drafting tools &mdash; unlimited generations</div>
       <div>&#10003; Generate with your actual client facts</div>
       <div>&#10003; Lien resolution with Ahlborn calculations</div>
-      <div>&#10003; White-glove setup &middot; DMV plaintiff firms only</div>
+      <div>&#10003; Filevine integration &middot; White-glove setup</div>
     </div>
     <a href="/#early-access" class="modal-cta">Request Early Access &#8594;</a>
-    <button class="modal-close" onclick="hideModal()">Back to demo</button>
+    <button class="modal-back" onclick="closeModal()">Back to demo</button>
   </div>
 </div>
  
 <script>
-// ─── DATA ────────────────────────────────────────────────────────────────────
+// ─── TOOL DEFINITIONS (matching spec exactly) ─────────────────────────────────
 var TOOLS = [
-  {id:'demand',     label:'Demand Letter',           icon:'✉',  desc:'Professional demand to insurer — liability, damages, settlement figure.',      caseTitle:'Rodriguez v. Whitfield / State Farm',      caseSub:'MVA · Bethesda MD · L4-L5 Herniation'},
-  {id:'medsum',     label:'Medical Records Summary', icon:'🩺', desc:'Chronological timeline with causation flags and case value analysis.',         caseTitle:'James T. Okafor — MVA Cervical/Shoulder',  caseSub:'MVA · DC · Cervical Disc + SLAP Tear'},
-  {id:'depo',       label:'Deposition Prep',         icon:'⚖',  desc:'Structured question outline with key admissions flagged.',                    caseTitle:'Okafor v. GEICO — Dr. Harrison IME Depo',  caseSub:'MVA · DC · Defense IME Cross'},
-  {id:'settlement', label:'Settlement Evaluation',   icon:'💰', desc:'Case value range, offer assessment, and counter-offer strategy.',             caseTitle:'Rodriguez v. Whitfield — Settlement',      caseSub:'MVA · Montgomery County MD · $300K policy'},
-  {id:'intake',     label:'Client Intake Summary',   icon:'📋', desc:'Structured case summary from raw intake notes.',                              caseTitle:'Darnell Washington — Slip & Fall Intake',  caseSub:'Premises Liability · Chevy Chase MD'},
-  {id:'expert',     label:'Expert Witness Prep',     icon:'🔬', desc:'Direct exam questions, anticipated cross, soundbites, vulnerability prep.',   caseTitle:'Rodriguez — Dr. Patel Expert Prep',         caseSub:'MVA · Bethesda MD · Neurosurgeon Direct'},
+  {
+    id:'demand', label:'Demand Letter', icon:'✉',
+    desc:'Professional demand to insurer — liability, damages, settlement figure.',
+    fields:[
+      {id:'client',          label:'Client name',                  type:'text',     placeholder:'Jane Rodriguez',                                        required:true,  demo:'Maria Elena Rodriguez'},
+      {id:'injuryType',      label:'Injury type & severity',       type:'text',     placeholder:'Lumbar disc herniation, L4-L5, requiring surgery',       required:true,  demo:'L4-L5 disc herniation with left-sided radiculopathy, confirmed MRI 04/02/2025; cervical sprain C5-C6'},
+      {id:'incident',        label:'Incident description',         type:'textarea', placeholder:'On March 15, 2025 at approximately 2:47 PM...',          required:true,  demo:'On March 15, 2025 at approximately 2:47 PM, our client was stopped at a red light at Old Georgetown Road and Democracy Boulevard, Bethesda, Maryland. Your insured, Thomas C. Whitfield, struck our client from behind at an estimated 35 mph. Your insured was subsequently cited for failure to stop for a steady red light signal (MD Transportation Article §21-202).'},
+      {id:'medicalExpenses', label:'Medical expenses ($)',          type:'text',     placeholder:'48,500',                                                 required:true,  demo:'48,740'},
+      {id:'lostWages',       label:'Lost wages ($)',                type:'text',     placeholder:'12,000',                                                 required:true,  demo:'14,200'},
+      {id:'prognosis',       label:'Prognosis / future treatment', type:'textarea', placeholder:'Physical therapy 2x/week for 6 months...',               required:true,  demo:'Treating neurosurgeon Dr. Anika Patel, M.D. has recommended L4-L5 microdiscectomy. Post-operative PT 3x/week for 6 months. Permanent partial impairment rating of 8% to the lumbar spine anticipated.'},
+      {id:'insurer',         label:'Insurer / adjuster name',      type:'text',     placeholder:'State Farm — John Doe, Adjuster',                        required:true,  demo:'State Farm — Claims Adjuster David Huang, File No. 47-2892-SF'},
+    ]
+  },
+  {
+    id:'medsum', label:'Medical Records Summary', icon:'🩺',
+    desc:'Chronological treatment timeline with causation flags and case value analysis.',
+    fields:[
+      {id:'client',  label:'Client name',           type:'text',     placeholder:'Jane Rodriguez',                          required:true,  demo:'James T. Okafor'},
+      {id:'records', label:'Medical records (paste or describe)', type:'textarea', placeholder:'03/15/2025 — ER visit, County General...', required:true,  demo:'02/08/2025 ER — MedStar DC. Cervical/lumbar sprain, right shoulder contusion. X-rays negative. 02/15/2025 Dr. Achebe ortho — positive Spurling\'s, impingement. Orders MRI. 02/24/2025 MRI — C5-C6 disc herniation right nerve root; SLAP Type II tear right shoulder. 03/01–05/30/2025 PT 3x/wk 52 sessions. 3-week gap April 14–May 5 (childcare). 06/12/2025 Dr. Achebe — permanency: 12% right shoulder, 9% cervical. 08/04/2025 right shoulder arthroscopy Georgetown, no complications. 09/15/2025 Achebe IME rebuttal — no prior imaging exists, acute onset consistent with traumatic etiology.'},
+      {id:'focus',   label:'Focus area (optional)',  type:'text',     placeholder:'Causation language, permanency statements', required:false, demo:'Causation language, permanency statements, treatment gaps'},
+    ]
+  },
+  {
+    id:'depo', label:'Deposition Prep', icon:'⚖',
+    desc:'Structured question outline with key admissions flagged.',
+    fields:[
+      {id:'deponent', label:'Deponent name & role', type:'text',     placeholder:'Dr. Marcus Webb, Defense IME Physician',                                  required:true, demo:'Dr. Craig T. Harrison, M.D. — Defense IME Orthopedic Surgeon'},
+      {id:'role',     label:'Your role',            type:'select',   placeholder:'',                                                                         required:true, demo:'Plaintiff', options:['Plaintiff','Defense']},
+      {id:'caseType', label:'Case type & key facts',type:'textarea', placeholder:'MVA rear-end collision. Client sustained L4-L5 disc herniation...',        required:true, demo:'MVA T-bone collision February 8, 2025, DC. Client James Okafor sustained C5-C6 disc herniation and traumatic SLAP tear requiring shoulder surgery. Defense retained Dr. Harrison who opined 50% pre-existing causation and disputed necessity of surgery.'},
+      {id:'goals',    label:'Deposition goals',     type:'text',     placeholder:'Lock down causation opinion, expose bias, % of defense work',              required:true, demo:'Expose bias and defense work volume, lock down the 50% pre-existing opinion, establish surgery was medically necessary'},
+    ]
+  },
+  {
+    id:'settlement', label:'Settlement Evaluation', icon:'💰',
+    desc:'Case value range, offer assessment, and counter-offer strategy.',
+    fields:[
+      {id:'client',          label:'Client name',               type:'text',     placeholder:'Jane Rodriguez',                        required:true, demo:'Maria Elena Rodriguez'},
+      {id:'injuryType',      label:'Injuries',                  type:'text',     placeholder:'L4-L5 disc herniation, cervical strain', required:true, demo:'L4-L5 disc herniation with radiculopathy; microdiscectomy recommended; cervical sprain C5-C6'},
+      {id:'medicalExpenses', label:'Total medical expenses ($)', type:'text',     placeholder:'48,500',                                required:true, demo:'48,740'},
+      {id:'lostWages',       label:'Lost wages ($)',             type:'text',     placeholder:'12,000',                                required:true, demo:'14,200'},
+      {id:'offer',           label:'Current offer ($)',          type:'text',     placeholder:'85,000',                                required:true, demo:'125,000'},
+      {id:'liabilityNotes',  label:'Liability / comparative fault notes', type:'textarea', placeholder:'Liability is clear — client stopped at red light...', required:true, demo:'Liability is clear. Insured cited for red light violation. Traffic camera confirms client stationary. No comparative fault. Policy limit $300,000.'},
+      {id:'jurisdiction',    label:'State / jurisdiction',       type:'text',     placeholder:'Maryland',                              required:true, demo:'Maryland — Montgomery County'},
+    ]
+  },
+  {
+    id:'intake', label:'Client Intake Summary', icon:'📋',
+    desc:'Structured case summary from raw intake notes.',
+    fields:[
+      {id:'caseType', label:'Case type',        type:'text',     placeholder:'Motor vehicle accident',  required:true, demo:'Premises liability — slip and fall'},
+      {id:'notes',    label:'Raw intake notes', type:'textarea', placeholder:'Client came in today, Jane Rodriguez, 34yo...', required:true, demo:'New client today, Darnell Washington, 52yo, facilities manager at NIH. Slipped at Chevy Chase Pavilion Dec 22 near escalator to food court. Wet floor, no wet floor sign anywhere. Fell hard on right side — elbow and hip. Urgent care same day. Missed 3 weeks work using vacation and sick days. Wife was with him, saw everything. Shoulder pain started a week later. Has photos on his phone from right after the fall. Wants to know if we can sue the mall. Seems credible, very steady.'},
+    ]
+  },
+  {
+    id:'expert', label:'Expert Witness Prep', icon:'🔬',
+    desc:'Direct exam questions, anticipated cross, soundbites, vulnerability prep.',
+    fields:[
+      {id:'expert',   label:'Expert name & specialty',        type:'text',     placeholder:'Dr. Sarah Chen, Orthopedic Surgery',      required:true, demo:'Dr. Anika Patel, M.D. — Neurosurgeon, MedStar Georgetown University Hospital'},
+      {id:'caseType', label:'Case facts',                     type:'textarea', placeholder:'MVA rear-end. Client sustained L4-L5...', required:true, demo:'MVA rear-end collision March 15, 2025, Bethesda MD. Client Maria Elena Rodriguez, 38yo, sustained L4-L5 disc herniation with left radiculopathy confirmed MRI. Microdiscectomy recommended and scheduled. Defense IME opined 50% pre-existing causation and disputed surgical necessity.'},
+      {id:'opinions', label:"Expert's anticipated opinions",  type:'textarea', placeholder:'The trauma caused acute herniation...',    required:true, demo:'L4-L5 disc herniation is causally related to the March 15, 2025 accident. Pre-existing degenerative changes were asymptomatic and clinically insignificant prior to the accident. Microdiscectomy is medically necessary. Client faces 8% permanent partial impairment to the lumbar spine. Left-sided radiculopathy has guarded prognosis for complete resolution.'},
+    ]
+  },
 ];
  
-var FIELDS = {
-  demand:[
-    {label:'Client Name',               val:'Maria Elena Rodriguez'},
-    {label:'Insurer / Adjuster',        val:'State Farm — Claims Adjuster David Huang, File No. 47-2892-SF'},
-    {label:'Injury Type & Severity',    val:'L4-L5 disc herniation with left-sided radiculopathy; cervical sprain C5-C6'},
-    {label:'Medical Expenses ($)',      val:'48,740'},
-    {label:'Lost Wages ($)',            val:'14,200'},
-    {label:'Prognosis',                 val:'Microdiscectomy recommended. PT 3x/week post-op. 8% permanent partial impairment.'},
-  ],
-  medsum:[
-    {label:'Client Name',  val:'James T. Okafor'},
-    {label:'Focus Area',   val:'Causation language, permanency statements, treatment gaps'},
-    {label:'Records Span', val:'ER, orthopedic notes, PT records, IME — February through September 2025'},
-  ],
-  depo:[
-    {label:'Deponent',         val:'Dr. Craig T. Harrison, M.D. — Defense IME Orthopedic Surgeon'},
-    {label:'Your Role',        val:'Plaintiff'},
-    {label:'Case Facts',       val:'MVA T-bone, DC. Client sustained C5-C6 disc herniation and traumatic SLAP tear. Defense IME: 50% pre-existing, disputes surgical necessity.'},
-    {label:'Deposition Goals', val:'Expose bias, lock down pre-existing opinion, establish surgical necessity'},
-  ],
-  settlement:[
-    {label:'Client',             val:'Maria Elena Rodriguez'},
-    {label:'Injuries',           val:'L4-L5 disc herniation with radiculopathy; microdiscectomy recommended'},
-    {label:'Medical Expenses ($)',val:'48,740'},
-    {label:'Lost Wages ($)',     val:'14,200'},
-    {label:'Current Offer ($)',  val:'125,000'},
-    {label:'Jurisdiction',       val:'Montgomery County, Maryland'},
-    {label:'Policy Limit',       val:'$300,000 — clear liability, no comparative fault'},
-  ],
-  intake:[
-    {label:'Case Type',       val:'Premises liability — slip and fall'},
-    {label:'Raw Intake Notes',val:'Darnell Washington, 52, facilities manager at NIH. Slipped at Chevy Chase Pavilion near escalator Dec 22. No wet floor sign. Fell on right side — elbow and hip. Urgent care same day. Missed 3 weeks work. Wife witnessed fall. Has photos on his phone. Delayed shoulder pain started 1 week later.'},
-  ],
-  expert:[
-    {label:'Expert',              val:'Dr. Anika Patel, M.D. — Neurosurgeon, MedStar Georgetown'},
-    {label:'Case Facts',          val:'MVA rear-end March 15, 2025, Bethesda. Client: L4-L5 herniation, left radiculopathy. Microdiscectomy scheduled. Defense IME: 50% pre-existing, disputes necessity.'},
-    {label:'Anticipated Opinions',val:'Herniation causally related to accident. Pre-existing changes asymptomatic. Surgery medically necessary. 8% permanent impairment. Radiculopathy prognosis guarded.'},
-  ],
-};
- 
+// ─── HARDCODED OUTPUTS ────────────────────────────────────────────────────────
 var OUTPUTS = {
 demand:`VIA CERTIFIED MAIL — RETURN RECEIPT REQUESTED
  
 **April 28, 2025**
  
-David Huang, Claims Adjuster
-State Farm Insurance Company
+David Huang, Claims Adjuster | State Farm Insurance
 File No. 47-2892-SF
  
 **RE: DEMAND FOR SETTLEMENT**
-**Claimant: Maria Elena Rodriguez**
-**Date of Loss: March 15, 2025**
-**Our File: MRR-2025-047**
+**Claimant: Maria Elena Rodriguez | Date of Loss: March 15, 2025**
  
 Dear Mr. Huang:
  
-This firm represents Maria Elena Rodriguez in connection with the serious personal injuries she sustained on March 15, 2025, as a direct and proximate result of the negligence of your insured, Thomas C. Whitfield. We write to demand full and fair compensation for Ms. Rodriguez's injuries, damages, and losses as set forth herein.
+This firm represents Maria Elena Rodriguez in connection with the serious personal injuries she sustained on March 15, 2025, as a direct and proximate result of the negligence of your insured, Thomas C. Whitfield.
  
 **I. LIABILITY**
  
-On March 15, 2025 at 2:47 PM, Ms. Rodriguez was lawfully stopped at a red traffic signal at the intersection of Old Georgetown Road and Democracy Boulevard, Bethesda, Maryland. Your insured, operating his vehicle at an estimated 35 miles per hour, struck Ms. Rodriguez's 2021 Honda Accord from the rear with no warning and no opportunity for evasion.
- 
-Liability is not in dispute. Your insured was issued a citation for failure to stop for a steady red signal in violation of Maryland Transportation Article §21-202. The collision was captured in part by a traffic monitoring camera. Witness statements from two bystanders confirm that Ms. Rodriguez's vehicle was stationary at impact.
+On March 15, 2025 at 2:47 PM, Ms. Rodriguez was lawfully stopped at a red signal at Old Georgetown Road and Democracy Boulevard, Bethesda. Your insured struck her vehicle from the rear at an estimated 35 mph with no warning. Your insured received a citation for violation of Maryland Transportation Article §21-202. Traffic camera footage corroborates Ms. Rodriguez's vehicle was stationary at impact. Liability is not in dispute.
  
 **II. INJURIES AND MEDICAL TREATMENT**
  
-The force of the collision caused Ms. Rodriguez to sustain significant spinal injuries that have permanently altered her quality of life.
- 
-Emergency Treatment (March 15, 2025): Ms. Rodriguez was transported via ambulance to Suburban Hospital, Bethesda, presenting with acute cervical and lumbar pain and left leg numbness. MRI on April 2, 2025 confirmed a disc herniation at L4-L5 with left-sided nerve root compression and radiculopathy, and disc bulging at C5-C6 with foraminal narrowing.
- 
-Ms. Rodriguez has been under the care of Dr. Anika Patel, M.D., board-certified neurosurgeon at MedStar Georgetown University Hospital. Conservative management including epidural steroid injections has been exhausted.
+MRI confirmed L4-L5 disc herniation with left-sided nerve root compression and radiculopathy, and C5-C6 disc bulging with foraminal narrowing. Ms. Rodriguez has been treated by Dr. Anika Patel, M.D., board-certified neurosurgeon at MedStar Georgetown. Conservative management including epidural steroid injections has been exhausted.
  
 **III. PROGNOSIS AND FUTURE TREATMENT**
  
-Dr. Patel has recommended L4-L5 microdiscectomy surgery, medically necessary and causally related to this accident. Dr. Patel has assigned Ms. Rodriguez a permanent partial impairment rating of 8% to the lumbar spine. Post-operative rehabilitation requires physical therapy three times per week for a minimum of six months.
+Dr. Patel has recommended L4-L5 microdiscectomy, medically necessary and causally related to this accident. Dr. Patel has assigned a permanent partial impairment rating of 8% to the lumbar spine.
  
 **IV. ECONOMIC DAMAGES**
  
-| Category | Amount |
+| Item | Amount |
 Medical expenses to date | $48,740
-Anticipated surgical costs (microdiscectomy) | $35,000
+Anticipated surgical costs | $35,000
 Post-operative physical therapy | $18,000
 Lost wages (14 weeks) | $14,200
-Total Economic Damages | $115,940
+**Total Economic Damages** | **$115,940**
  
 **V. GENERAL DAMAGES**
  
-Ms. Rodriguez, 38 years of age, is a dental hygienist and mother of three children. Prior to this accident, she was an active individual who coached her son's soccer team and maintained an active household. She now experiences chronic left leg pain and numbness that interrupts her sleep and has caused significant anxiety and depression. General damages are conservatively valued at no less than $225,000.
+Ms. Rodriguez, 38, is a dental hygienist and mother of three. She coached her son's soccer team and maintained an active household prior to this accident. She now suffers chronic left leg pain and numbness affecting sleep, parenting, and employment. General damages are conservatively valued at no less than $225,000.
  
 **VI. SETTLEMENT DEMAND**
  
-We demand settlement in the amount of **$285,000** to resolve this matter in its entirety. This demand shall remain open for thirty (30) days from the date of this letter.
- 
-Should State Farm fail to respond reasonably, we are fully prepared to file suit in the Circuit Court for Montgomery County.
+We demand settlement of **$285,000** within thirty (30) days. Failure to respond reasonably will result in suit filed in the Circuit Court for Montgomery County.
  
 Very truly yours,
-**Counsel for Claimant Maria Elena Rodriguez**`,
+**Counsel for Maria Elena Rodriguez**`,
  
 medsum:`**MEDICAL RECORDS SUMMARY**
 **Client: James T. Okafor | Date of Loss: February 8, 2025**
 **Prepared by CaseZero Counsel | For Attorney Use Only**
  
-**CHRONOLOGICAL TREATMENT TIMELINE**
+**CHRONOLOGICAL TIMELINE**
  
 02/08/2025 | MedStar Washington Hospital Center — Emergency Department
-Acute neck pain, right shoulder pain, lower back pain following T-bone collision. X-rays negative for fracture. Diagnosis: Cervical sprain, lumbar sprain, right shoulder contusion.
-[CAUSATION] No prior radiology report mentions degenerative changes — supports fresh onset.
+Acute neck, shoulder, and low back pain following T-bone MVA. X-rays negative for fracture. Dx: Cervical sprain, lumbar sprain, right shoulder contusion.
+[CAUSATION] No prior radiology mentions degenerative changes — supports fresh onset.
  
 02/15/2025 | Dr. Robert Achebe, M.D. — Orthopedic Surgery
-Reduced cervical ROM (flexion 30°, normal 45°). Positive Spurling's test bilateral. Right shoulder positive impingement sign.
-[CAUSATION] Dr. Achebe: "In my medical opinion, the patient's current symptomatology is causally related to the MVA of February 8, 2025. Acute onset immediately following collision, in the absence of prior treatment, supports traumatic etiology."
+Positive Spurling's test bilateral. Right shoulder positive impingement sign. ROM limited.
+[CAUSATION] Dr. Achebe: "Symptomatology is causally related to the MVA of February 8, 2025. Acute onset following collision, absent prior treatment, supports traumatic etiology."
  
-02/24/2025 | Advanced Radiology Associates — MRI Studies
-Cervical MRI: C5-C6 central disc herniation with right-sided nerve root impingement. C6-C7 disc bulge. Right Shoulder MRI: Partial supraspinatus tear. Posterior labral tear (SLAP Type II).
-No mention of chronic degenerative changes. Consistent with acute traumatic injury.
+02/24/2025 | Advanced Radiology — MRI
+Cervical: C5-C6 disc herniation with right-sided nerve root impingement. Shoulder: Partial supraspinatus tear. SLAP Type II tear. No degenerative changes noted.
  
-03/01 – 05/30/2025 | Capitol Physical Therapy (52 sessions, 3x/week)
-Modest ROM improvement. Pain averaging 6/10. Patient reports persistent headaches 4/7 days.
-⚠️ GAP: 3-week gap April 14 – May 5. Documented reason: childcare obligations. Obtain supporting documentation.
+03/01–05/30/2025 | Capitol Physical Therapy — 52 sessions, 3x/week
+Modest ROM gains. Pain averaging 6/10. Headaches 4/7 days.
+⚠️ GAP: 3 weeks April 14–May 5. Documented: childcare. Obtain supporting documentation.
  
 06/12/2025 | Dr. Achebe — Follow-up
-[PERMANENCY] "It is my opinion that Mr. Okafor has sustained a permanent partial impairment to the right shoulder of 12% and to the cervical spine of 9% as a result of the February 8, 2025 accident. These impairments will likely be permanent in nature."
+[PERMANENCY] "Permanent partial impairment: right shoulder 12%, cervical spine 9%, as a result of the February 8, 2025 accident. These impairments will likely be permanent."
  
 08/04/2025 | MedStar Georgetown — Right Shoulder Arthroscopy
 Supraspinatus repair and SLAP repair. No complications. Discharged same day.
  
-09/15/2025 | Dr. Achebe — IME Rebuttal Note
-[CAUSATION] "Dr. Harrison's opinion is not supported by radiological evidence. Pre-2025 imaging does not exist for this patient. The absence of prior medical treatment for cervical or shoulder complaints over the preceding decade is inconsistent with a diagnosis of pre-existing symptomatic degenerative disease."
+09/15/2025 | Dr. Achebe — IME Rebuttal
+[CAUSATION] "Dr. Harrison's opinion is not supported by radiological evidence. Pre-2025 imaging does not exist for this patient. A decade of zero cervical or shoulder treatment is inconsistent with 50% symptomatic pre-existing disease."
  
-**FLAGS AND ISSUES**
-⚠️ Treatment gap April 14 – May 5, 2025 — obtain written explanation, childcare documentation helpful.
-⚠️ Defense IME asserts 50% pre-existing — Dr. Achebe's 09/15 rebuttal is strong. Retain independent radiologist.
-⚠️ Cervical intervention not yet complete — do not settle before cervical workup is finalized.
+**FLAGS**
+⚠️ Treatment gap April 14–May 5 — obtain childcare documentation.
+⚠️ Defense IME: 50% pre-existing — Achebe rebuttal strong. Retain independent radiologist.
+⚠️ Cervical intervention not complete — do not settle prematurely.
  
 **CASE VALUE SUMMARY**
-James Okafor presents with documented traumatic disc herniation at C5-C6, a surgically repaired right shoulder with permanent impairment ratings of 9% and 12%, and credible treating physician causation opinions that directly rebut the defense IME's pre-existing argument. The treatment gap is explainable but must be addressed proactively. Case value is enhanced by the surgical intervention, permanency ratings, and strength of Dr. Achebe's causation and rebuttal opinions.`,
+Mr. Okafor presents with documented traumatic disc herniation, a surgically repaired shoulder with permanent impairment ratings of 9% and 12%, and treating physician causation opinions that directly rebut the defense IME. The treatment gap is explainable but must be addressed proactively. Case value is enhanced by surgical intervention, permanency ratings, and the strength of Dr. Achebe's causation and rebuttal opinions.`,
  
 depo:`**DEPOSITION OUTLINE — DR. CRAIG T. HARRISON, M.D.**
 **Defense IME Orthopedic Surgeon | Okafor v. GEICO**
 **Plaintiff's Examination — Attorney Work Product**
  
-**SECTION 1: BACKGROUND AND CREDENTIALS**
+**SECTION 1: CREDENTIALS AND BIAS**
  
-1. Dr. Harrison, you are board-certified in orthopedic surgery — is that correct?
-2. When were you last re-certified, and what was required for that recertification?
-3. How long have you been performing independent medical examinations?
-4. Approximately what percentage of your current professional income derives from IMEs versus clinical patient care? [KEY]
-5. Of the IMEs you perform, what percentage are retained by plaintiffs versus defense counsel or insurance companies? [KEY]
-6. In 2024, how many IME reports did you produce for GEICO or its counsel?
-7. Do you have any standing contracts or preferred vendor relationships with insurance carriers?
-8. What is your standard fee for an IME examination, report, and deposition testimony?
+1. You are board-certified in orthopedic surgery — correct?
+2. What percentage of your income currently comes from IMEs versus clinical care? [KEY]
+3. Of the IMEs you perform, what percentage are retained by defense versus plaintiff? [KEY]
+4. How many IME reports did you produce for GEICO or its counsel in 2024?
+5. Do you have any standing contracts with insurance carriers or defense firms?
+6. What is your fee for an IME examination, report, and today's deposition?
  
-**SECTION 2: EXAMINATION AND METHODOLOGY**
+**SECTION 2: EXAMINATION METHODOLOGY**
  
-1. Your examination of Mr. Okafor lasted approximately 22 minutes — is that consistent with your records?
-2. You reviewed Mr. Okafor's medical records prior to the examination — which records specifically?
-3. You did not order or review any independent imaging — you relied solely on the radiology reports, correct? [KEY]
-4. You have no prior medical records for Mr. Okafor — no records from before February 8, 2025 — correct? [KEY]
-5. So when you opine that 50% of his condition is pre-existing, you have no baseline imaging with which to compare his current films? [KEY]
-6. You performed range of motion testing — did you use a goniometer or visual estimation?
-7. You did not perform electrodiagnostic testing to evaluate nerve root compression — is that accurate?
+1. Your examination of Mr. Okafor lasted approximately 22 minutes — correct?
+2. You did not order or review any independent imaging — you relied on radiology reports only? [KEY]
+3. You have no medical records for Mr. Okafor predating February 8, 2025 — correct? [KEY]
+4. So your 50% pre-existing opinion is based on no baseline imaging for comparison? [KEY]
+5. You performed range of motion testing — did you use a goniometer or visual estimation?
+6. You did not perform electrodiagnostic testing — accurate?
  
-**SECTION 3: THE PRE-EXISTING CONDITION OPINION**
+**SECTION 3: THE PRE-EXISTING OPINION**
  
-1. Your report states 50% of Mr. Okafor's condition is pre-existing degenerative changes — what is the basis for that specific percentage? [KEY]
-2. The word "degenerative" in a radiology report means age-related change — it does not mean the condition was symptomatic before the accident, does it?
-3. A person can have disc degeneration visible on MRI and be completely asymptomatic — correct?
-4. Mr. Okafor had no prior treatment for cervical or shoulder complaints in the decade before this accident — does that change your pre-existing opinion? [KEY]
-5. Dr. Achebe, his treating surgeon, found no evidence of prior symptomatic pathology and has opined 100% causation — you are aware of that opinion?
-6. If Mr. Okafor had never seen a spine or shoulder specialist, never had physical therapy, and never missed a day of work for cervical or shoulder pain prior to February 8, 2025 — would that be consistent with someone who had a 50% symptomatic pre-existing condition? [KEY]
+1. Your report states 50% of Mr. Okafor's condition is pre-existing — what is the basis for that exact percentage? [KEY]
+2. "Degenerative" on a radiology report means age-related change — not necessarily symptomatic, correct?
+3. A person can have disc degeneration on MRI and be completely asymptomatic — correct?
+4. Mr. Okafor had zero treatment for cervical or shoulder complaints in the decade before this accident — does that affect your pre-existing opinion? [KEY]
+5. Dr. Achebe, his treating surgeon, opined 100% causation — you are aware of that?
+6. If Mr. Okafor had never seen a spine or shoulder specialist, never had PT, never missed a day of work for these complaints — is that consistent with a 50% symptomatic pre-existing condition? [KEY]
  
 **SECTION 4: SURGICAL NECESSITY**
  
-1. Dr. Achebe performed right shoulder arthroscopy on August 4, 2025 — you reviewed his operative report?
-2. You opined surgery was not medically necessary — but you examined Mr. Okafor five months before surgery was performed, correct?
-3. At the time of your examination, Mr. Okafor had completed months of conservative care — you were aware of that?
-4. Surgical intervention is appropriate when conservative management has been exhausted — would you agree with that general principle?
-5. You have not reviewed the post-surgical records showing Mr. Okafor's recovery trajectory — correct? [KEY]
+1. You examined Mr. Okafor five months before surgery was performed — correct?
+2. At the time of your examination, he had already completed months of conservative care — you knew that?
+3. Surgery is appropriate when conservative management is exhausted — do you agree with that principle?
+4. You have not reviewed post-surgical records — correct? [KEY]
  
 **SECTION 5: CLOSING — PRESERVE FOR TRIAL**
  
-1. You offered opinions about causation and surgical necessity without reviewing prior imaging, without reviewing post-surgical records, and based on an examination lasting under 25 minutes — is that accurate?
-2. Your opinion could change if you found no evidence of pre-existing symptomatic complaints — true?
-3. You were retained and paid by defense counsel in this case — the jury will hear that, correct?
-4. Is there anything in the medical records that would cause you to change your opinions?`,
+1. You formed opinions on causation and surgical necessity without prior imaging, without post-surgical records, and from a 22-minute examination — accurate?
+2. Your opinion could change if you found no evidence of pre-existing symptomatic disease — true?
+3. You were retained and paid by defense counsel — the jury will hear that?
+4. Is there anything that would cause you to change your opinions?`,
  
 settlement:`**SETTLEMENT EVALUATION**
 **Maria Elena Rodriguez | Montgomery County, Maryland**
-**Prepared: April 28, 2025 | For Attorney Use Only**
+**For Attorney Use Only**
  
 **CASE VALUE RANGE**
  
-| Tier | Value | Rationale |
-Conservative | $195,000 | Strong liability; surgery pre-op; unknown outcome
-Mid-Range | $265,000 | Post-surgical, good recovery, 8% permanency confirmed
-High | $340,000+ | Poor surgical outcome; additional cervical intervention needed
+| Tier | Value | Basis |
+Conservative | $195,000 | Pre-surgery; outcome unknown
+Mid-Range | $265,000 | Post-surgery; good recovery; permanency confirmed
+High | $340,000+ | Poor surgical outcome; additional intervention needed
  
-Multiplier basis: Total economic damages of $115,940 support a general damages multiplier of 2.5x–3.5x in Montgomery County based on comparable jury verdicts.
+Multiplier basis: Economic damages of $115,940 support 2.5x–3.5x in Montgomery County based on comparable jury verdicts for L4-L5 disc herniation with surgical intervention.
  
-**ASSESSMENT OF THE $125,000 OFFER: REJECT**
+**ASSESSMENT OF $125,000 OFFER: REJECT**
  
-The current offer represents approximately 1.1x total economic damages and falls well below reasonable case value for a plaintiff of Ms. Rodriguez's age and injury profile.
+The current offer represents approximately 1.1x total economic damages and falls well below reasonable case value. It is deficient on four grounds:
  
-The offer is deficient in four respects:
-1. It does not account for the $35,000+ surgical cost not yet incurred
-2. It undervalues general damages for a 38-year-old facing permanent spinal impairment
-3. It is designed to settle before surgery confirms permanency and necessity
-4. Montgomery County juries have returned verdicts of $200,000–$450,000 for analogous L4-L5 cases
+1. Does not account for $35,000+ surgical cost not yet incurred
+2. Undervalues general damages for a 38-year-old facing permanent spinal impairment
+3. Designed to settle before surgery confirms permanency and necessity
+4. Montgomery County juries have returned $200,000–$450,000 for analogous cases
  
-State Farm is incentivized to resolve before surgery. This is a negotiation tactic, not a good-faith assessment.
+State Farm is incentivized to resolve before surgery. This is a negotiation tactic.
  
-**KEY FACTORS**
+**VALUE FACTORS**
  
-Value enhancers: Zero comparative fault. Clear pre-accident health — no prior spine treatment. Board-certified treating neurosurgeon with strong causation language. Active, young plaintiff. $300,000 policy limit — no UIM exposure.
+Enhancers: Zero comparative fault. No prior spine treatment on record. Board-certified treating neurosurgeon, strong causation language. Active 38-year-old plaintiff. $300,000 policy — no UIM exposure. Montgomery County demographics favor plaintiff.
  
-Value risks: Surgery not yet performed — outcome unknown. C5-C6 not yet surgically addressed. 3-week PT gap (childcare documented but exploitable).
+Risks: Surgery not yet performed — outcome unknown. C5-C6 not yet surgically addressed. 3-week PT gap (documented but exploitable by defense).
  
-**RECOMMENDED COUNTER-OFFER: $235,000**
+**RECOMMENDED COUNTER: $235,000**
  
-A counter of $235,000 positions for resolution in the $195,000–$215,000 range if State Farm responds meaningfully. If they counter below $175,000, file suit immediately.
+Positions for resolution in the $195,000–$215,000 range if State Farm responds meaningfully. If they counter below $175,000, file suit immediately. Discovery will strengthen the case: deposition of at-fault driver, cell phone records, biomechanical expert on 35 mph impact.
  
-**CLIENT-FRIENDLY SUMMARY**
+**CLIENT SUMMARY**
  
-State Farm's $125,000 offer does not fairly compensate you for what happened. Your surgery alone is expected to cost over $35,000, and you have already incurred nearly $49,000 in medical bills. When we account for your lost wages, your future medical care, your pain, and the permanent impact on your spine, your case is worth significantly more. We recommend rejecting this offer and countering at $235,000. We are fully prepared to take this to trial if State Farm does not negotiate in good faith.`,
+State Farm's $125,000 offer does not fairly compensate you. Your surgery alone will cost over $35,000, on top of nearly $49,000 already incurred. Accounting for lost wages, future medical, pain, and permanent spinal impairment — your case is worth significantly more. We recommend countering at $235,000 and are fully prepared to take this to trial if State Farm does not negotiate in good faith.`,
  
 intake:`**CLIENT INTAKE SUMMARY**
-**Darnell Washington — Premises Liability**
-**Date of Intake: [Today] | Prepared by CaseZero Counsel**
+**Darnell Washington — Premises Liability | Slip and Fall**
+**For Attorney Use Only**
  
 **Client Information**
 Name: Darnell Washington | Age: 52 | Occupation: Facilities Manager, NIH
-Health Insurance: Aetna | Witness: Spouse (eyewitness — name to be obtained)
-Photographs: Client has smartphone photos taken at scene immediately after fall. Secure these today.
+Health Insurance: Aetna
+Witness: Spouse — eyewitness, name to be obtained
+Photos: Client has smartphone photos taken immediately after fall. **Secure today.**
  
 **Incident Summary**
-Date: December 22, 2024 | Location: Chevy Chase Pavilion, near escalator to food court
-What happened: Client slipped on a wet floor surface in a high-traffic common area. No wet floor warning signs present. Fell hard on right side sustaining immediate impact to right elbow and right hip.
-Property owner: Chevy Chase Pavilion (Macerich Co.) — management company to be identified.
+Date: December 22, 2024 | Location: Chevy Chase Pavilion — near escalator, food court level
+Facts: Client slipped on wet floor surface in high-traffic common area. No wet floor warning signs present. Fell on right side; immediate right elbow and hip impact.
+Property owner: Chevy Chase Pavilion (Macerich Co.) — management entity to be confirmed.
  
 **Injuries Reported**
-Immediate: Right elbow pain, right hip pain. Treated same day at urgent care.
-Subsequent (approx. 1 week post-fall): Right shoulder pain — client attributes to fall.
-Note: Delayed shoulder symptom requires medical documentation to establish causation.
+Immediate: Right elbow pain, right hip pain — urgent care same day.
+Delayed (approx. 1 week): Right shoulder pain — client attributes to fall.
+⚠️ Delayed onset requires treating physician causation opinion promptly.
  
 **Liability Assessment**
-Maryland premises liability: business invitee must be protected from known/knowable dangerous conditions. Client's account establishes: wet floor in high-traffic common area + absence of warning signage + immediate injury upon contact. Spouse as eyewitness substantially strengthens the case.
+Maryland premises liability: business invitees must be protected from known/knowable dangerous conditions. Account establishes wet floor in high-traffic area with zero warning signage. Spouse as eyewitness materially strengthens the case.
  
 **Potential Defendants**
-1. Chevy Chase Pavilion LLC / Macerich Co. — primary defendant
-2. Mall management company — if contracted separately
-3. Individual tenant — if leak originated from specific store
-4. Cleaning/janitorial contractor — if maintenance was outsourced
+1. Chevy Chase Pavilion LLC / Macerich Co. — primary
+2. Mall management company if separately contracted
+3. Individual tenant if leak originated from specific store
+4. Cleaning/janitorial contractor if maintenance was outsourced
  
 **Statute of Limitations**
-Maryland premises liability (adult): 3 years from date of incident.
-Deadline: December 22, 2027. No filing urgency — but surveillance video preservation is time-critical.
+Maryland — 3 years from date of incident. Deadline: December 22, 2027.
+⚠️ No filing urgency — but surveillance video is time-critical. Act within 48 hours.
  
 **Immediate Action Items**
-☐ Send written preservation demand to Chevy Chase Pavilion today — all surveillance footage, maintenance logs, incident reports, cleaning schedules for December 22
-☐ Obtain signed medical authorization and request urgent care records
+☐ Preservation demand to Chevy Chase Pavilion today — all surveillance footage, maintenance logs, incident reports, cleaning schedules for December 22
+☐ Obtain signed medical authorization; request urgent care records
 ☐ Schedule client and spouse for recorded statement
 ☐ Download and preserve smartphone photos from client's device
-☐ Confirm property owner — run Maryland SDAT property records
-☐ Order weather records for December 22, 2024, Chevy Chase MD
+☐ Confirm property owner — Maryland SDAT property records
+☐ Order weather records December 22, 2024, Chevy Chase MD
 ☐ Refer client for orthopedic evaluation — delayed shoulder symptom needs causation opinion
  
 **Red Flags / Issues**
-⚠️ Delayed shoulder symptom — right shoulder pain began 1 week after fall. Defense will argue unrelated. Secure treating physician's causation opinion promptly.
-⚠️ Prior right knee condition — obtain prior records. If gait/balance contributed, defense may exploit.
-⚠️ Lost time via vacation/sick days — obtain employer records confirming lost time and income verification.
-⚠️ No-sign corroboration needed — spouse statement and surveillance footage must confirm absence of wet floor sign. If footage shows a sign was present, liability is seriously compromised.
-⚠️ Surveillance video is the single most important piece of evidence — do not delay.`,
+⚠️ Delayed shoulder symptom — defense will argue unrelated. Secure causation opinion promptly.
+⚠️ Prior right knee condition — obtain prior records; confirm not relevant to gait/fall.
+⚠️ Lost time via vacation/sick days — obtain employer income verification records.
+⚠️ "No sign" corroboration — spouse statement and surveillance must confirm absence of signage. If footage shows a sign existed, liability is seriously compromised.
+⚠️ Surveillance video is the single most important evidence — do not delay.`,
  
 expert:`**EXPERT WITNESS PREPARATION MEMORANDUM**
-**Dr. Anika Patel, M.D. — Treating Neurosurgeon**
-**Rodriguez v. Whitfield / State Farm | Confidential — Attorney Work Product**
+**Dr. Anika Patel, M.D. | Rodriguez v. Whitfield / State Farm**
+**Confidential — Attorney Work Product**
  
 **PART 1: DIRECT EXAMINATION (12 Questions)**
  
-1. Dr. Patel, please tell the jury where you trained and what your specialty is.
-   Build credentials naturally — Georgetown, board certification, fellowship.
+1. Dr. Patel, tell the jury where you trained and what your specialty is.
+   Let credentials land naturally — Georgetown, board certification, fellowship.
  
-2. In your practice at MedStar Georgetown, what types of patients do you typically treat?
-   Frames her as a serious clinician, not a hired expert.
+2. In your practice at MedStar Georgetown, what types of patients do you treat?
+   Frames her as a serious clinician — not a hired gun.
  
 3. When did Maria Rodriguez first come to see you, and how was she referred?
-   Establishes treating relationship — she didn't seek out a hired gun.
+   Establishes treating relationship — she was hired to heal, not testify.
  
-4. When you first examined Ms. Rodriguez, what did you find?
-   Physical findings in lay terms — ROM, Lasegue sign, neurological deficits.
+4. When you examined Ms. Rodriguez, what did you find?
+   Physical findings in plain language — ROM limits, Lasegue sign, neurological deficits.
  
-5. What did the MRI show — can you explain what a disc herniation at L4-L5 means in plain terms?
-   Key teaching moment: "the disc is like a jelly donut — when the outer layer tears, the inner material presses against the nerve."
+5. What did the MRI show — what does a disc herniation at L4-L5 actually mean?
+   Teach the jury: "The disc is like a jelly donut. When the outer layer tears, the inner material presses on the nerve."
  
 6. Do you have an opinion — to a reasonable degree of medical certainty — about what caused Ms. Rodriguez's disc herniation?
    Deliver the causation opinion cleanly. No hedging.
  
-7. The defense has a doctor who says 50% of her condition is pre-existing — what is your response?
-   No prior imaging, no prior treatment, no prior symptoms. You cannot have 50% symptomatic pre-existing condition with zero medical history.
+7. The defense has a doctor who says 50% of her condition is pre-existing — your response?
+   No prior imaging, no prior treatment, no prior symptoms. Zero.
  
-8. Why did you recommend surgery rather than continuing injections and therapy?
-   Conservative care was exhausted. This is the standard of care question.
+8. Why recommend surgery rather than continuing injections and therapy?
+   Conservative care was exhausted. Standard of care required it.
  
 9. Walk the jury through what a microdiscectomy involves and what recovery looks like.
-   Demystify surgery — it is not elective, not minor, it is real and necessary.
+   Demystify surgery — real, necessary, not elective.
  
 10. What is Ms. Rodriguez's prognosis after surgery?
-    Guarded — she will improve but will not return to baseline. 8% permanent impairment.
+    8% permanent impairment — guarded return to baseline.
  
-11. What does an 8% permanent partial impairment to the lumbar spine mean for daily life?
-    Translate clinical rating into human terms — what can't she do? What will always hurt?
+11. What does 8% permanent impairment to the lumbar spine mean for daily life?
+    Translate the clinical rating: what can't she do? What will always hurt?
  
-12. Dr. Patel, is there any question in your mind that Ms. Rodriguez's injuries were caused by the March 15, 2025 accident?
-    Close with certainty — eye contact to the jury.
+12. Is there any question in your mind that her injuries were caused by the March 15, 2025 accident?
+    Deliver with eye contact to the jury. Certainty.
  
 **PART 2: ANTICIPATED CROSS AND RE-DIRECT**
  
-Attack 1: "You're her treating doctor — you're not objective."
+Attack: "You're her treating doctor — you're not objective."
 Re-direct: "I'm her treating physician. I wasn't hired to testify — I was hired to heal her. My opinions are the same as what I wrote in her chart from day one, before anyone discussed litigation."
  
-Attack 2: "Degenerative disc disease is age-related — isn't that pre-existing?"
+Attack: "Disc degeneration is normal aging — isn't that pre-existing?"
 Re-direct: "Degenerative changes are common. Symptomatic disc herniation requiring surgery is not. Ms. Rodriguez had zero treatment for back pain in the decade before this accident. That is not someone with a pre-existing symptomatic condition."
  
-Attack 3: "Surgery wasn't necessary — you could have continued conservative care."
-Re-direct: "Ms. Rodriguez tried that for months. Epidural injections. Extensive physical therapy. When the nerve is compressed to the point that conservative care no longer provides relief and the patient has progressive neurological symptoms, surgery is the standard of care."
+Attack: "Surgery wasn't necessary — she could have continued conservative care."
+Re-direct: "She tried that for months. Epidural injections. Extensive PT. When conservative care no longer provides meaningful relief and neurological symptoms are progressing, surgery is not optional — it is the standard of care."
  
-Attack 4: "You can't say the accident caused this — you have no prior MRI."
-Re-direct: "The absence of prior imaging is significant. If Ms. Rodriguez had a symptomatic pre-existing condition, she would have sought treatment. She had never seen a spine specialist in her life before March 15th. The best evidence her spine was functioning normally is that she had an active, pain-free life — coaching soccer, working full-time, raising three children — right up until she was struck from behind."
+Attack: "You have no prior MRI — you can't say the accident caused this."
+Re-direct: "The absence of prior imaging is itself significant. If Ms. Rodriguez had a symptomatic pre-existing condition, she would have sought treatment. She had never seen a spine specialist before March 15th. She was coaching soccer and working full-time right up until she was struck from behind."
  
 **PART 3: THREE SOUNDBITES**
  
 "The only thing that changed in Maria Rodriguez's life on March 15, 2025 was that she was hit by a car. Before that day, she had no back pain. After that day, she had a herniated disc. In medicine, we call that cause and effect."
  
-"The defense doctor examined Maria for 22 minutes — once — and concluded that 50% of her condition was pre-existing. I have examined her six times, ordered and reviewed her imaging, performed injections, and am about to perform surgery on her spine. We have very different amounts of information."
+"The defense doctor examined Maria for 22 minutes — once. I have examined her six times, ordered and reviewed her imaging, performed injections, and am about to operate on her spine. We have very different amounts of information."
  
-"Eight percent permanent impairment doesn't sound like much until you understand what it means. It means Maria Rodriguez will manage her back for the rest of her life. It means she will have good days and bad days. It means the accident didn't just hurt her — it changed her."
+"Eight percent permanent impairment doesn't sound like much until you understand what it means. It means Maria Rodriguez will manage her back for the rest of her life. It means the accident didn't just hurt her — it changed her."
  
-**PART 4: VULNERABILITY ASSESSMENT**
+**PART 4: VULNERABILITIES**
  
-Volume of plaintiff referrals — prepare Dr. Patel to testify she treats whoever is referred and that her chart notes — written before litigation — reflect clinical opinions, not litigation strategy.
+Volume of plaintiff referrals — prepare her to explain that her chart notes written before litigation reflect clinical opinions, not strategy.
  
-Surgery timing — prepare her to walk through the specific clinical indicators triggering the surgical recommendation: neurological progression and failure of two epidural injections.
+Surgery timing — walk through the specific clinical indicators that triggered the recommendation: neurological progression + failure of two epidural injections.
  
-The 8% impairment rating — ensure she is fluent in AMA Guides, 6th Edition, and can explain the derivation of the rating step by step.
+The 8% impairment rating — ensure fluency in AMA Guides 6th Edition; explain the derivation step by step.
  
-Cervical injury not surgically treated — prepare her to explain that C5-C6 is being managed conservatively and that the lumbar radiculopathy presented the more urgent neurological picture.`
+Cervical injury untreated surgically — C5-C6 is managed conservatively; lumbar radiculopathy presented the more urgent neurological picture.`
 };
  
 // ─── STATE ────────────────────────────────────────────────────────────────────
-var currentTool = 'demand';
-var generating = false;
-var typewriterTimer = null;
-var doneTools = {};
+var currentId  = 'demand';
+var isGenerating = false;
+var twTimer    = null;
  
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-document.getElementById('wm-date').textContent = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+// ─── BOOT ────────────────────────────────────────────────────────────────────
+document.getElementById('wm-date').textContent =
+  new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
  
-// Build tool buttons
-var toolList = document.getElementById('tool-list');
-TOOLS.forEach(function(t){
-  var btn = document.createElement('button');
-  btn.className = 'tool-btn' + (t.id === 'demand' ? ' active' : '');
-  btn.id = 'btn-' + t.id;
-  btn.innerHTML = '<span class="icon">' + t.icon + '</span><span class="name">' + t.label + '</span>';
-  btn.addEventListener('click', function(){ selectTool(t.id); });
-  toolList.appendChild(btn);
-});
+// Build sidebar
+(function(){
+  var list = document.getElementById('tool-list');
+  TOOLS.forEach(function(t){
+    var b = document.createElement('button');
+    b.className = 'tool-btn' + (t.id === 'demand' ? ' active' : '');
+    b.id = 'tbtn-' + t.id;
+    b.innerHTML =
+      '<span class="tool-icon">' + t.icon + '</span>' +
+      '<span class="tool-name">' + t.label + '</span>' +
+      '<span class="tool-done" id="tdone-' + t.id + '">&#10003;</span>';
+    b.addEventListener('click', function(){ switchTool(t.id); });
+    list.appendChild(b);
+  });
+})();
  
 // Load first tool
 loadTool('demand');
  
 // ─── FUNCTIONS ────────────────────────────────────────────────────────────────
-function selectTool(id) {
-  if (generating) return;
-  if (typewriterTimer) { clearTimeout(typewriterTimer); typewriterTimer = null; }
+function switchTool(id) {
+  if (isGenerating) return;
+  if (twTimer) { clearTimeout(twTimer); twTimer = null; }
   document.querySelectorAll('.tool-btn').forEach(function(b){ b.classList.remove('active'); });
-  document.getElementById('btn-' + id).classList.add('active');
-  currentTool = id;
+  document.getElementById('tbtn-' + id).classList.add('active');
+  currentId = id;
   loadTool(id);
   resetOutput();
 }
@@ -697,207 +711,223 @@ function loadTool(id) {
   var t = TOOLS.find(function(x){ return x.id === id; });
   document.getElementById('tool-title').textContent = t.label;
   document.getElementById('tool-desc').textContent = t.desc;
-  document.getElementById('case-title').textContent = t.caseTitle;
-  document.getElementById('case-sub').textContent = t.caseSub;
   document.getElementById('empty-icon').textContent = t.icon;
-  document.getElementById('empty-title').textContent = 'See it in action.';
-  document.getElementById('empty-text').textContent = 'The case facts are loaded. Hit Generate to watch Claude draft your ' + t.label.toLowerCase() + ' in real time.';
-  document.getElementById('gen-msg').textContent = 'Claude is drafting your ' + t.label.toLowerCase() + '\u2026';
+  document.getElementById('empty-text').textContent =
+    'The fields are pre-filled with a sample ' + t.label.toLowerCase() + ' case. Edit them or click Generate to see the output.';
+  document.getElementById('gen-msg').textContent =
+    'Claude is drafting your ' + t.label.toLowerCase() + '\u2026';
   document.getElementById('wm-tool').textContent = t.label;
+  document.getElementById('modal-title').textContent =
+    'You just generated a ' + t.label.toLowerCase() + '.\nYours starts here.';
  
-  // Render fields
+  // Render form fields
   var fc = document.getElementById('fields-container');
   fc.innerHTML = '';
-  (FIELDS[id] || []).forEach(function(f){
-    var wrap = document.createElement('div');
-    var label = document.createElement('div');
-    label.className = 'field-label';
-    label.textContent = f.label;
-    var val = document.createElement('div');
-    val.className = 'field-val';
-    val.textContent = f.val;
-    wrap.appendChild(label);
-    wrap.appendChild(val);
-    fc.appendChild(wrap);
+  t.fields.forEach(function(f){
+    var grp = document.createElement('div');
+    grp.className = 'field-group';
+ 
+    var lbl = document.createElement('label');
+    lbl.className = 'field-label';
+    lbl.setAttribute('for', 'f-' + f.id);
+    lbl.innerHTML = f.label +
+      (f.required ? '<span class="req">*</span>' : ' <span class="opt">(optional)</span>');
+    grp.appendChild(lbl);
+ 
+    var input;
+    if (f.type === 'textarea') {
+      input = document.createElement('textarea');
+      input.className = 'field-textarea';
+      input.rows = 4;
+      input.value = f.demo;
+      input.placeholder = f.placeholder;
+    } else if (f.type === 'select') {
+      input = document.createElement('select');
+      input.className = 'field-select';
+      (f.options || []).forEach(function(o){
+        var opt = document.createElement('option');
+        opt.value = o; opt.textContent = o;
+        if (o === f.demo) opt.selected = true;
+        input.appendChild(opt);
+      });
+    } else {
+      input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'field-input';
+      input.value = f.demo;
+      input.placeholder = f.placeholder;
+    }
+    input.id = 'f-' + f.id;
+    grp.appendChild(input);
+    fc.appendChild(grp);
   });
 }
  
 function resetOutput() {
   document.getElementById('empty-state').style.display = 'flex';
-  document.getElementById('gen-state').style.display = 'none';
+  document.getElementById('gen-state').style.display   = 'none';
   document.getElementById('output-content').style.display = 'none';
-  document.getElementById('output-actions').style.display = 'none';
-  document.getElementById('output-status').innerHTML = 'OUTPUT';
-  document.getElementById('output-text').innerHTML = '';
-  document.getElementById('cursor').style.display = 'none';
-  document.getElementById('disclaimer').style.display = 'none';
-  document.getElementById('ai-note').style.display = 'none';
-  var genBtn = document.getElementById('gen-btn');
-  genBtn.disabled = false;
-  genBtn.textContent = 'Generate Draft \u2197';
+  document.getElementById('output-btns').style.display    = 'none';
+  document.getElementById('status-live').style.display    = 'none';
+  document.getElementById('status-done').style.display    = 'none';
+  document.getElementById('out-disclaimer').style.display = 'none';
+  document.getElementById('out-ai').style.display         = 'none';
+  document.getElementById('cursor').style.display         = 'none';
+  document.getElementById('output-text').innerHTML        = '';
+  var btn = document.getElementById('gen-btn');
+  btn.disabled = false;
+  btn.innerHTML = 'Generate Draft &#8599;';
 }
  
 function generate() {
-  if (generating) return;
-  generating = true;
-  var genBtn = document.getElementById('gen-btn');
-  genBtn.disabled = true;
-  genBtn.innerHTML = '<div class="spin" style="width:14px;height:14px;border-width:2px;margin-right:6px"></div>Generating\u2026';
+  if (isGenerating) return;
+  isGenerating = true;
  
-  document.getElementById('empty-state').style.display = 'none';
-  document.getElementById('gen-state').style.display = 'flex';
-  document.getElementById('output-content').style.display = 'none';
-  document.getElementById('output-actions').style.display = 'none';
-  document.getElementById('output-status').innerHTML = 'OUTPUT <span class="live">\u25cf generating</span>';
+  var btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spin" style="width:14px;height:14px;border-width:2px"></div>&nbsp;Generating\u2026';
+ 
+  document.getElementById('empty-state').style.display   = 'none';
+  document.getElementById('gen-state').style.display     = 'flex';
+  document.getElementById('output-content').style.display= 'none';
+  document.getElementById('status-live').style.display   = 'inline';
  
   var delay = 1100 + Math.random() * 700;
-  typewriterTimer = setTimeout(function(){
-    showOutput(OUTPUTS[currentTool] || '');
+  twTimer = setTimeout(function(){
+    startTypewriter(OUTPUTS[currentId] || '');
   }, delay);
 }
  
-function showOutput(text) {
-  document.getElementById('gen-state').style.display = 'none';
+function startTypewriter(text) {
+  document.getElementById('gen-state').style.display    = 'none';
   document.getElementById('output-content').style.display = 'block';
-  document.getElementById('cursor').style.display = 'inline-block';
+  document.getElementById('cursor').style.display       = 'inline-block';
  
-  var outputEl = document.getElementById('output-text');
-  outputEl.innerHTML = '';
-  var outputBody = document.getElementById('output-body');
- 
+  var outEl   = document.getElementById('output-text');
+  var bodyEl  = document.getElementById('output-body');
+  outEl.innerHTML = '';
   var chars = 0;
-  var speed = 12;
-  var interval = 16;
+  var speed = 14;
  
   function tick() {
-    chars += speed;
-    if (chars >= text.length) chars = text.length;
-    renderMarkdown(text.slice(0, chars), outputEl);
-    outputBody.scrollTop = outputBody.scrollHeight;
- 
+    chars = Math.min(chars + speed, text.length);
+    renderMD(text.slice(0, chars), outEl);
+    bodyEl.scrollTop = bodyEl.scrollHeight;
     if (chars < text.length) {
-      typewriterTimer = setTimeout(tick, interval);
+      twTimer = setTimeout(tick, 16);
     } else {
-      // Done
-      document.getElementById('cursor').style.display = 'none';
-      document.getElementById('disclaimer').style.display = 'block';
-      document.getElementById('ai-note').style.display = 'block';
-      document.getElementById('output-actions').style.display = 'flex';
-      document.getElementById('output-status').innerHTML = 'OUTPUT <span class="done-dot">\u25cf complete</span>';
-      doneTools[currentTool] = true;
-      var doneEl = document.getElementById('btn-' + currentTool).querySelector('.done');
-      if (!doneEl) {
-        var d = document.createElement('span');
-        d.className = 'done';
-        d.textContent = '\u2713';
-        document.getElementById('btn-' + currentTool).appendChild(d);
-      }
-      generating = false;
-      var genBtn = document.getElementById('gen-btn');
-      genBtn.disabled = false;
-      genBtn.textContent = 'Regenerate \u2197';
+      finish();
     }
   }
   tick();
 }
  
-function renderMarkdown(text, el) {
-  var lines = text.split('\n');
-  var html = '';
-  var inTable = false;
-  var tableHeaderDone = false;
+function finish() {
+  document.getElementById('cursor').style.display         = 'none';
+  document.getElementById('status-live').style.display   = 'none';
+  document.getElementById('status-done').style.display   = 'inline';
+  document.getElementById('out-disclaimer').style.display= 'block';
+  document.getElementById('out-ai').style.display        = 'block';
+  document.getElementById('output-btns').style.display   = 'flex';
+  document.getElementById('tdone-' + currentId).classList.add('show');
+  isGenerating = false;
+  var btn = document.getElementById('gen-btn');
+  btn.disabled = false;
+  btn.innerHTML = 'Regenerate &#8599;';
+}
  
-  lines.forEach(function(line, i){
+// ── Markdown renderer ──────────────────────────────────────────────────────
+function renderMD(text, el) {
+  var lines = text.split('\n');
+  var html  = '';
+  var tRows = [];
+  var inTbl = false;
+ 
+  function flushTable() {
+    if (!tRows.length) return;
+    html += '<table><thead><tr>';
+    tRows[0].forEach(function(c){ html += '<th>' + c + '</th>'; });
+    html += '</tr></thead><tbody>';
+    for (var r = 1; r < tRows.length; r++) {
+      html += '<tr>';
+      tRows[r].forEach(function(c){ html += '<td>' + c + '</td>'; });
+      html += '</tr>';
+    }
+    html += '</tbody></table>';
+    tRows = []; inTbl = false;
+  }
+ 
+  lines.forEach(function(line) {
     if (!line.trim()) {
-      if (inTable) { html += '</tbody></table>'; inTable = false; tableHeaderDone = false; }
+      flushTable();
       html += '<div style="height:8px"></div>';
       return;
     }
  
-    // Table rows (pipe separated)
-    if (line.match(/^\|/) || (i > 0 && lines[i-1] && lines[i-1].match(/^\|/))) {
-      // separator row
-      if (line.match(/^\|[-|\s:]+\|/)) return;
-      if (line.match(/^\|/)) {
-        var cells = line.split('|').filter(function(c,ci,arr){ return ci > 0 && ci < arr.length - 1; });
-        if (!inTable) {
-          html += '<table><thead><tr>';
-          cells.forEach(function(c){ html += '<th>' + escHtml(c.trim()) + '</th>'; });
-          html += '</tr></thead><tbody>';
-          inTable = true; tableHeaderDone = true;
-          return;
-        }
-        html += '<tr>';
-        cells.forEach(function(c){ html += '<td>' + escHtml(c.trim()) + '</td>'; });
-        html += '</tr>';
-        return;
-      }
+    // Table separator
+    if (line.match(/^\|?[-:| ]+\|?$/) && line.includes('-')) return;
+ 
+    // Table row (pipe-delimited)
+    if (line.startsWith('|') || (inTbl && line.includes(' | '))) {
+      var raw  = line.replace(/^\||\|$/g,'');
+      var cells = raw.split('|').map(function(c){ return inlineF(esc(c.trim())); });
+      tRows.push(cells); inTbl = true; return;
     }
  
-    if (inTable && !line.match(/^\|/)) {
-      // Treat as table row without pipes (our text format)
-      var parts = line.split(' | ');
-      if (parts.length >= 2) {
-        html += '<tr>';
-        parts.forEach(function(p){ html += '<td>' + formatInline(escHtml(p.trim())) + '</td>'; });
-        html += '</tr>';
-        return;
-      }
-      html += '</tbody></table>'; inTable = false; tableHeaderDone = false;
+    // Non-pipe "table" rows: "Label | value"
+    var pipeMatch = line.match(/^(.+?)\s\|\s(.+)$/);
+    if (pipeMatch && !line.startsWith('#')) {
+      if (!inTbl) tRows = []; // reset if not in table
+      tRows.push([inlineF(esc(pipeMatch[1].trim())), inlineF(esc(pipeMatch[2].trim()))]);
+      inTbl = true; return;
     }
  
-    // Bold section headers **text** (whole line)
-    if (line.match(/^\*\*[^*]+\*\*$/) && line.length < 80) {
-      html += '<div class="section-head">' + escHtml(line.replace(/\*\*/g,'')) + '</div>';
-      return;
-    }
+    flushTable();
  
-    // ⚠️ warnings
-    if (line.startsWith('\u26a0\ufe0f') || line.startsWith('\u26a0')) {
-      html += '<div class="warn"><span>\u26a0\ufe0f</span><span>' + formatInline(escHtml(line.replace(/^\u26a0\ufe0f?\s*/,''))) + '</span></div>';
-      return;
+    // Bold-only heading line
+    if (line.match(/^\*\*[^*]+\*\*$/) && line.length < 90) {
+      html += '<div class="sec">' + esc(line.replace(/\*\*/g,'')) + '</div>'; return;
     }
- 
-    // ☐ checkboxes
+    // ⚠️ warning
+    if (line.startsWith('\u26a0')) {
+      html += '<div class="warn-row"><span>\u26a0\ufe0f</span><span>' +
+        inlineF(esc(line.replace(/^\u26a0\ufe0f?\s*/,''))) + '</span></div>'; return;
+    }
+    // ☐ checkbox
     if (line.startsWith('\u2610')) {
-      html += '<div class="check"><span class="check-icon">\u2610</span><span>' + formatInline(escHtml(line.slice(1).trim())) + '</span></div>';
-      return;
+      html += '<div class="chk-row"><span class="chk-icon">\u2610</span><span>' +
+        inlineF(esc(line.slice(1).trim())) + '</span></div>'; return;
     }
- 
-    html += '<p>' + formatInline(escHtml(line)) + '</p>';
+    html += '<p>' + inlineF(esc(line)) + '</p>';
   });
- 
-  if (inTable) html += '</tbody></table>';
+  flushTable();
   el.innerHTML = html;
 }
  
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
- 
-function formatInline(s) {
+function inlineF(s) {
   return s
     .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
     .replace(/\*(.*?)\*/g,'<em>$1</em>')
-    .replace(/\[KEY\]/g,'<span class="key-badge">KEY</span>')
-    .replace(/\[CAUSATION\]/g,'<span class="causation-badge">CAUSATION</span>')
-    .replace(/\[PERMANENCY\]/g,'<span class="key-badge" style="background:#818cf8">PERMANENCY</span>');
+    .replace(/\[KEY\]/g,'<span class="key">KEY</span>')
+    .replace(/\[CAUSATION\]/g,'<span class="caus">CAUSATION</span>')
+    .replace(/\[PERMANENCY\]/g,'<span class="perm">PERMANENCY</span>');
 }
  
-function copyOutput() {
-  var text = OUTPUTS[currentTool] || '';
-  navigator.clipboard.writeText(text).catch(function(){});
-  var btn = document.querySelector('.copy-btn');
-  btn.textContent = '\u2713 Copied';
-  setTimeout(function(){ btn.textContent = 'Copy'; }, 2000);
+// ── Actions ───────────────────────────────────────────────────────────────
+function copyOut() {
+  var t = OUTPUTS[currentId] || '';
+  if (navigator.clipboard) navigator.clipboard.writeText(t).catch(function(){});
+  var b = document.querySelector('.copy-btn');
+  b.textContent = '\u2713 Copied';
+  setTimeout(function(){ b.textContent = 'Copy'; }, 2000);
 }
- 
-function showModal() { document.getElementById('modal').classList.add('show'); }
-function hideModal() { document.getElementById('modal').classList.remove('show'); }
- 
-// Close modal on backdrop click
+function openModal()  { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
 document.getElementById('modal').addEventListener('click', function(e){
-  if (e.target === this) hideModal();
+  if (e.target === this) closeModal();
 });
 </script>
 </body>
