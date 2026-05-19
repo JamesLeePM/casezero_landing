@@ -35,12 +35,12 @@
     <span>Initialising pipeline…</span>
   </div>
   <div id="root"></div>
-
+ 
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
-
+ 
     const NW = 182, NH = 96;
-
+ 
     const DEFS = {
       intake:     { c:'#00b89a', bg:'#030f0c', bd:'#074030', gl:'◈', role:'Case Intake'    },
       detector:   { c:'#38bdf8', bg:'#020c16', bd:'#0c2c50', gl:'◎', role:'Lien Detector'  },
@@ -49,14 +49,14 @@
       negotiator: { c:'#f59e0b', bg:'#0d0b02', bd:'#3a2c00', gl:'◉', role:'Negotiator'     },
       waterfall:  { c:'#00d4b8', bg:'#030f0c', bd:'#094038', gl:'▽', role:'Waterfall'      },
     };
-
+ 
     const STAT = {
       active:   { c:'#00b89a', l:'RUNNING', p:true  },
       queued:   { c:'#f59e0b', l:'QUEUED',  p:false },
       idle:     { c:'#1a3a5a', l:'STANDBY', p:false },
       review:   { c:'#818cf8', l:'REVIEW',  p:true  },
     };
-
+ 
     const INIT_A = [
       { id:'int1', name:'Case Intake',      type:'intake',     status:'active', x: 44, y:232,
         skills:['Filevine API','Case Parse','Metadata Extract','Dedup'], mcps:['Filevine','DocuSign'] },
@@ -71,7 +71,7 @@
       { id:'wtr1', name:'Waterfall Engine', type:'waterfall',  status:'idle',   x:806, y:232,
         skills:['Disbursement Calc','Client Net','Attorney Fees','Ledger'], mcps:['Filevine','QuickBooks'] },
     ];
-
+ 
     const CONNS = [
       { id:'c1', from:'int1', to:'det1', lbl:'case data'   },
       { id:'c2', from:'int1', to:'det2', lbl:'case data'   },
@@ -81,7 +81,7 @@
       { id:'c6', from:'neg1', to:'wtr1', lbl:'settlements' },
       { id:'c7', from:'det2', to:'wtr1', lbl:'allocation'  },
     ];
-
+ 
     const LOG0 = [
       { t:'10:14:02', m:'Case #4821 — Rodriguez v. State Farm ingested from Filevine' },
       { t:'10:14:03', m:'Lien Detector: Medicare MSP lien confirmed — $1,840.00' },
@@ -91,7 +91,7 @@
       { t:'10:14:08', m:'Ahlborn reduction: Medicare $1,840 → $453.08 (75.4% reduction)' },
       { t:'10:14:10', m:'Hospital LOP: negotiation floor set at $420.00' },
     ];
-
+ 
     const MSGS = [
       n => `${n}: statutory calculation complete`,
       n => `${n}: lienholder response received and logged`,
@@ -105,16 +105,16 @@
       n => `${n}: DocuSign envelope prepared`,
       n => `${n}: proration factor applied — $983 recovered for client`,
     ];
-
+ 
     const STAT_POOL = ['active','active','active','queued','queued','idle','review'];
-
+ 
     function Lbl({ children }) {
       return <div style={{ fontSize:9, color:'#1a4060', letterSpacing:'.09em', fontWeight:600, marginBottom:4, marginTop:9 }}>{children}</div>;
     }
     function Hr() {
       return <div style={{ height:1, background:'#0b1e30', margin:'10px 0' }}/>;
     }
-
+ 
     function App() {
       const [agents,  setAgents]  = useState(INIT_A);
       const [sel,     setSel]     = useState(null);
@@ -125,19 +125,19 @@
       const [panSt,   setPanSt]   = useState({ x:0, y:0 });
       const [log,     setLog]     = useState(LOG0);
       const wrapRef = useRef(null);
-
+ 
       const selAg = agents.find(a => a.id === sel) || null;
       const cts = { active:0, queued:0, idle:0, review:0 };
       agents.forEach(a => { if (cts[a.status] !== undefined) cts[a.status]++; });
-
+ 
       const addLog = m => setLog(l => [{ t: new Date().toLocaleTimeString('en-US', {hour12:false}), m }, ...l.slice(0, 59)]);
-
+ 
       // Hide loading overlay once mounted
       useEffect(() => {
         const el = document.getElementById('loading');
         if (el) { el.style.opacity = '0'; setTimeout(() => el.remove(), 400); }
       }, []);
-
+ 
       // Live simulation
       useEffect(() => {
         const t = setInterval(() => {
@@ -151,7 +151,7 @@
         }, 2200);
         return () => clearInterval(t);
       }, []);
-
+ 
       // Scroll-to-zoom
       useEffect(() => {
         const el = wrapRef.current; if (!el) return;
@@ -159,7 +159,7 @@
         el.addEventListener('wheel', h, { passive: false });
         return () => el.removeEventListener('wheel', h);
       }, []);
-
+ 
       const onCvDown = e => {
         if (e.target.closest('.ag')) return;
         setSel(null); setPanning(true);
@@ -179,7 +179,7 @@
         }
       };
       const onUp = () => { setDrag(null); setPanning(false); };
-
+ 
       return (
         <div onMouseMove={onMove} onMouseUp={onUp}
           style={{ fontFamily:"'IBM Plex Sans','Segoe UI',sans-serif", fontSize:12, lineHeight:1.5,
@@ -199,11 +199,11 @@
             ::-webkit-scrollbar-track { background:#060e1a }
             ::-webkit-scrollbar-thumb { background:#0b1e30 }
           `}</style>
-
+ 
           {/* ── TOP BAR ── */}
           <div style={{ height:54, background:'#060d18', borderBottom:'1px solid #0b1e30',
                         display:'flex', alignItems:'center', padding:'0 20px', gap:18, flexShrink:0 }}>
-
+ 
             {/* Logo + back link */}
             <a href="/" style={{ display:'flex', alignItems:'center', gap:10, textDecoration:'none' }}>
               <div style={{ width:32, height:32, background:'#00b89a14', borderRadius:7,
@@ -222,15 +222,15 @@
                 <div style={{ fontSize:9, color:'#1a4060', letterSpacing:'.06em', fontWeight:500 }}>← casezero.one</div>
               </div>
             </a>
-
+ 
             <div style={{ width:1, height:24, background:'#0b1e30' }}/>
-
+ 
             {/* Live badge */}
             <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:9, color:'#1a4060', fontWeight:500 }}>
               <span style={{ color:'#00b89a', fontSize:6, animation:'BL 2s ease-in-out infinite' }}>●</span>
               PIPELINE DEMO
             </div>
-
+ 
             {/* Status pills */}
             {[['active','#00b89a','RUNNING'],['queued','#f59e0b','QUEUED'],['review','#818cf8','REVIEW'],['idle','#1a3a5a','STANDBY']].map(([s,c,l]) =>
               cts[s] > 0 && (
@@ -241,7 +241,7 @@
                 </span>
               )
             )}
-
+ 
             {/* Case context */}
             <div style={{ fontSize:10, color:'#1a4060', background:'#060d18', border:'1px solid #0b1e30',
                           padding:'5px 14px', borderRadius:4, fontWeight:500 }}>
@@ -249,8 +249,12 @@
               Case #4821 — Rodriguez v. State Farm&ensp;
               <span style={{ color:'#0b1e30' }}>· $23,500 gross · Maryland</span>
             </div>
-
+ 
             <div style={{ marginLeft:'auto', display:'flex', alignItems:'center', gap:12 }}>
+              {/* Nav links */}
+              <a href="/counsel.html" style={{ fontSize:11, fontWeight:600, color:'#00b89a', textDecoration:'none', letterSpacing:'.03em' }}>Counsel ↗</a>
+              <a href="/roadmap.html" style={{ fontSize:11, color:'#1a4060', textDecoration:'none', fontWeight:500 }}>Roadmap</a>
+ 
               {/* Zoom */}
               <div style={{ display:'flex', alignItems:'center', gap:8, fontSize:10 }}>
                 <span style={{ color:'#1a3a5a', fontWeight:500 }}>ZOOM</span>
@@ -259,7 +263,7 @@
                   style={{ width:68, accentColor:'#00b89a', cursor:'pointer' }}/>
                 <span style={{ color:'#5a8aaa', minWidth:30 }}>{Math.round(zoom*100)}%</span>
               </div>
-
+ 
               {/* CTA */}
               <a href="https://casezero.one/#early-access"
                 style={{ fontSize:11, fontWeight:600, background:'#00b89a', color:'#fff',
@@ -270,15 +274,15 @@
               </a>
             </div>
           </div>
-
+ 
           {/* ── BODY ── */}
           <div style={{ flex:1, display:'flex', overflow:'hidden' }}>
-
+ 
             {/* CANVAS */}
             <div ref={wrapRef}
               style={{ flex:1, position:'relative', overflow:'hidden', cursor:panning?'grabbing':'default' }}
               onMouseDown={onCvDown}>
-
+ 
               {/* Grid */}
               <div style={{ position:'absolute', inset:0,
                             backgroundImage:'radial-gradient(circle,#0d2235 1px,transparent 0)',
@@ -287,7 +291,7 @@
               <div style={{ position:'absolute', inset:0,
                             background:'radial-gradient(ellipse at 46% 48%,#091a2c 0%,transparent 58%)',
                             pointerEvents:'none' }}/>
-
+ 
               {/* Stage labels */}
               {[
                 { label:'01 · INTAKE',     pct:'6%'  },
@@ -299,16 +303,16 @@
                                           color:'#0d2035', fontWeight:600, letterSpacing:'.1em',
                                           pointerEvents:'none', zIndex:10 }}>{label}</div>
               ))}
-
+ 
               <div style={{ position:'absolute', bottom:10, left:14, fontSize:9,
                             color:'#0b1a28', pointerEvents:'none', zIndex:10 }}>
                 DRAG NODES TO REPOSITION · SCROLL TO ZOOM · CLICK TO INSPECT
               </div>
-
+ 
               {/* Viewport */}
               <div style={{ transform:`translate(${pan.x}px,${pan.y}px) scale(${zoom})`,
                             transformOrigin:'0 0', position:'relative', width:1100, height:590 }}>
-
+ 
                 {/* SVG connections */}
                 <svg width={1100} height={590} style={{ position:'absolute', inset:0, overflow:'visible', zIndex:1 }}>
                   <defs>
@@ -344,7 +348,7 @@
                     );
                   })}
                 </svg>
-
+ 
                 {/* Agent nodes */}
                 {agents.map(ag => {
                   const def = DEFS[ag.type] || DEFS.intake;
@@ -390,7 +394,7 @@
                 })}
               </div>
             </div>
-
+ 
             {/* SIDE PANEL */}
             <div style={{ width:222, background:'#060d18', borderLeft:'1px solid #0b1e30',
                           display:'flex', flexDirection:'column', flexShrink:0, overflow:'hidden' }}>
@@ -471,7 +475,7 @@
                       <span style={{ marginLeft:'auto', fontSize:7, color:'#0b1e30' }}>+ ADD</span>
                     </div>
                   ))}
-
+ 
                   <Hr/>
                   <div style={{ fontSize:9, color:'#1a4060', letterSpacing:'.09em', fontWeight:600, marginBottom:8 }}>▸ CONNECTED TOOLS</div>
                   {['Filevine','DocuSign','Gmail','CMS Portal','MD Statutes','DC Regs','VA Code','QuickBooks','Notion'].map(m => (
@@ -482,7 +486,7 @@
                       <span style={{ marginLeft:'auto', fontSize:7, color:'#0b2640' }}>LIVE</span>
                     </div>
                   ))}
-
+ 
                   <Hr/>
                   <div style={{ fontSize:9, color:'#1a4060', letterSpacing:'.09em', fontWeight:600, marginBottom:8 }}>▸ CASE #4821 SNAPSHOT</div>
                   {[
@@ -499,7 +503,7 @@
                       <span style={{ color:c, fontWeight:600 }}>{v}</span>
                     </div>
                   ))}
-
+ 
                   <Hr/>
                   <a href="https://casezero.one/#early-access"
                     style={{ display:'block', textAlign:'center', fontSize:10, fontWeight:600,
@@ -512,7 +516,7 @@
               )}
             </div>
           </div>
-
+ 
           {/* LOG */}
           <div style={{ height:112, background:'#050b15', borderTop:'1px solid #0b1e30',
                         display:'flex', flexDirection:'column', flexShrink:0 }}>
@@ -541,7 +545,7 @@
         </div>
       );
     }
-
+ 
     ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
   </script>
 </body>
