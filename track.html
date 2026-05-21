@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CaseZero · Lien Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:    #080d1a;
+    --navy1:   #0d1526;
+    --navy2:   #111e33;
+    --navy3:   #1a2a44;
+    --navy4:   #243650;
+    --teal:    #00c9a7;
+    --teal-d:  #009e84;
+    --teal-dim:#00c9a722;
+    --amber:   #f5a623;
+    --amber-d: #b87d1a;
+    --amber-dim:#f5a62322;
+    --red:     #e05555;
+    --red-dim: #e0555522;
+    --green:   #4caf84;
+    --green-dim:#4caf8422;
+    --text:    #cdd8e8;
+    --text-dim:#7a92ad;
+    --border:  #1e304a;
+    --border2: #243650;
+    --mono:    'DM Mono', monospace;
+    --head:    'Barlow Condensed', sans-serif;
+    --body:    'Barlow', sans-serif;
+  }
+ 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+ 
+  /* ── HEADER ── */
+  header {
+    background: var(--navy1);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 52px;
+    padding: 0 20px;
+    flex-shrink: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: var(--head);
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: .04em;
+    color: #fff;
+    text-decoration: none;
+    margin-right: 6px;
+  }
+  .logo span { color: var(--teal); }
+  .header-badge {
+    background: var(--teal-dim);
+    color: var(--teal);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    border: 1px solid var(--teal);
+    text-transform: uppercase;
+    margin-right: auto;
+  }
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .header-nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    transition: color .15s, background .15s;
+  }
+  .header-nav a:hover { color: var(--text); background: var(--navy3); }
+  .header-nav a.active { color: var(--teal); }
+  .header-btn {
+    background: var(--teal);
+    color: var(--navy);
+    font-family: var(--head);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: .05em;
+    padding: 6px 14px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    margin-left: 8px;
+    transition: background .15s;
+  }
+  .header-btn:hover { background: var(--teal-d); }
+ 
+  /* ── LAYOUT ── */
+  .app {
+    display: grid;
+    grid-template-columns: 280px 1fr 320px;
+    grid-template-rows: 1fr;
+    flex: 1;
+    overflow: hidden;
+  }
+ 
+  /* ── SIDEBAR: CASE LIST ── */
+  .sidebar {
+    background: var(--navy1);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .sidebar-head {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .sidebar-head h2 {
+    font-family: var(--head);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+  .search-box {
+    background: var(--navy2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 10px;
+    width: 100%;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .search-box::placeholder { color: var(--text-dim); }
+  .search-box:focus { border-color: var(--teal); }
+ 
+  .filter-row {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+  }
+  .filter-chip {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .06em;
+    padding: 3px 8px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all .15s;
+    text-transform: uppercase;
+  }
+  .filter-chip.active {
+    border-color: var(--teal);
+    color: var(--teal);
+    background: var(--teal-dim);
+  }
+ 
+  .case-list {
+    overflow-y: auto;
+    flex: 1;
+    padding: 8px 0;
+  }
+  .case-list::-webkit-scrollbar { width: 4px; }
+  .case-list::-webkit-scrollbar-track { background: transparent; }
+  .case-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+ 
+  .case-item {
+    padding: 11px 16px;
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: all .12s;
+    position: relative;
+  }
+  .case-item:hover { background: var(--navy2); }
+  .case-item.active {
+    background: var(--navy2);
+    border-left-color: var(--teal);
+  }
+  .case-item-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .case-name {
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 14px;
+    color: #e8f0f8;
+    line-height: 1.2;
+  }
+  .case-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .dot-active { background: var(--teal); box-shadow: 0 0 6px var(--teal); }
+  .dot-pending { background: var(--amber); }
+  .dot-warning { background: var(--red); }
+  .dot-closed { background: var(--text-dim); }
+ 
+  .case-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .case-id { color: var(--teal); }
+  .case-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .progress-track {
+    flex: 1;
+    height: 3px;
+    background: var(--navy4);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--teal);
+    transition: width .5s ease;
+  }
+  .case-pct {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .lien-count {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    background: var(--navy3);
+    padding: 1px 5px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+  }
+  .deadline-flag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--amber);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+ 
+  /* ── MAIN PANEL ── */
+  .main {
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .main::-webkit-scrollbar { width: 4px; }
+  .main::-webkit-scrollbar-track { background: transparent; }
+  .main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+ 
+  .case-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .case-title {
+    font-family: var(--head);
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: .02em;
+  }
+  .case-subtitle {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .case-subtitle .sep { color: var(--border2); }
+  .header-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    align-items: flex-start;
+  }
+  .btn {
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: .05em;
+    padding: 7px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--navy2);
+    color: var(--text);
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--border2); background: var(--navy3); color: #fff; }
+  .btn-primary {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: var(--navy);
+  }
+  .btn-primary:hover { background: var(--teal-d); border-color: var(--teal-d); color: var(--navy); }
+  .btn-amber { border-color: var(--amber); color: var(--amber); }
+  .btn-amber:hover { background: var(--amber-dim); }
+ 
+  /* ── STAT STRIP ── */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .stat-card {
+    background: var(--navy2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1;
+  }
+  .stat-value.teal { color: var(--teal); }
+  .stat-value.amber { color: var(--amber); }
+  .stat-value.red { color: var(--red); }
+  .stat-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+  .stat-sub.up { color: var(--green); }
+ 
+  /* ── SECTION ── */
+  .section-label {
+    font-family: var(--head);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+ 
+  /* ── LIEN TABLE ── */
+  .lien-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .lien-table thead tr {
+    border-bottom: 1px solid var(--border);
+  }
+  .lien-table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: left;
+    padding: 0 12px 8px;
+    font-weight: 400;
+  }
+  .lien-table th:first-child { padding-left: 0; }
+  .lien-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background .1s;
+    cursor: pointer;
+  }
+  .lien-table tbody tr:hover { background: var(--navy2); }
+  .lien-table tbody tr.selected { background: var(--navy2); border-left: 2px solid var(--teal); }
+  .lien-table td {
+    padding: 12px 12px;
+    vertical-align: middle;
+  }
+  .lien-table td:first-child { padding-left: 0; }
+ 
+  .lien-type-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+    border: 1px solid;
+  }
+  .badge-medicare { color: #6db8e8; border-color: #6db8e8; background: #6db8e822; }
+  .badge-medprov  { color: var(--green); border-color: var(--green); background: var(--green-dim); }
+  .badge-erisa    { color: #a78bfa; border-color: #a78bfa; background: #a78bfa22; }
+  .badge-medicaid { color: var(--amber); border-color: var(--amber); background: var(--amber-dim); }
+  .badge-wc       { color: #f97316; border-color: #f97316; background: #f9731622; }
+ 
+  .amount-col { font-family: var(--mono); font-size: 13px; color: #e8f0f8; }
+  .amount-reduced { color: var(--teal); }
+  .amount-saved { color: var(--green); font-size: 11px; }
+ 
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+  .pill-dot { width: 5px; height: 5px; border-radius: 50%; }
+  .status-detected    { color: var(--text-dim); border-color: var(--border2); }
+  .status-sent        { color: #6db8e8; border-color: #6db8e8; background: #6db8e822; }
+  .status-negotiating { color: var(--amber); border-color: var(--amber); background: var(--amber-dim); }
+  .status-resolved    { color: var(--teal); border-color: var(--teal); background: var(--teal-dim); }
+  .status-overdue     { color: var(--red); border-color: var(--red); background: var(--red-dim); }
+ 
+  .deadline-cell {
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .deadline-ok     { color: var(--text-dim); }
+  .deadline-soon   { color: var(--amber); }
+  .deadline-overdue{ color: var(--red); }
+ 
+  .action-cell {
+    display: flex;
+    gap: 6px;
+  }
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--border);
+    background: var(--navy2);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dim);
+    transition: all .15s;
+    font-size: 13px;
+  }
+  .icon-btn:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-dim); }
+ 
+  /* ── TIMELINE ── */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item {
+    display: flex;
+    gap: 14px;
+    padding: 0 0 16px 0;
+    position: relative;
+  }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-spine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 28px;
+  }
+  .tl-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--teal);
+    border: 2px solid var(--navy);
+    flex-shrink: 0;
+    margin-top: 3px;
+    position: relative;
+    z-index: 1;
+  }
+  .tl-dot.pending { background: var(--amber); }
+  .tl-dot.future  { background: var(--border2); }
+  .tl-dot.warn    { background: var(--red); }
+  .tl-line {
+    width: 1px;
+    flex: 1;
+    background: var(--border);
+    margin-top: 3px;
+  }
+  .tl-content { flex: 1; }
+  .tl-event {
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 13px;
+    color: #e8f0f8;
+    line-height: 1.3;
+  }
+  .tl-event.future { color: var(--text-dim); }
+  .tl-note {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .tl-date {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 3px;
+  }
+  .tl-date.soon { color: var(--amber); }
+ 
+  /* ── WATERFALL PREVIEW ── */
+  .waterfall { display: flex; flex-direction: column; gap: 6px; }
+  .wf-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--navy2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .wf-rank {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    width: 18px;
+    flex-shrink: 0;
+  }
+  .wf-label { flex: 1; font-size: 13px; color: var(--text); }
+  .wf-amount {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: #e8f0f8;
+    text-align: right;
+  }
+  .wf-amount.pending { color: var(--text-dim); font-style: italic; }
+  .wf-track {
+    width: 80px;
+    height: 4px;
+    background: var(--navy4);
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .wf-fill { height: 100%; border-radius: 2px; }
+  .wf-row.client .wf-label { font-weight: 500; color: var(--teal); }
+  .wf-row.client .wf-amount { color: var(--teal); font-weight: 500; }
+ 
+  /* ── RIGHT PANEL ── */
+  .right-panel {
+    background: var(--navy1);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .right-panel::-webkit-scrollbar { width: 4px; }
+  .right-panel::-webkit-scrollbar-track { background: transparent; }
+  .right-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+ 
+  .rp-section {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .rp-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+ 
+  .log-item {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .log-item:last-child { border-bottom: none; }
+  .log-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    background: var(--navy3);
+  }
+  .log-body { flex: 1; }
+  .log-event { font-size: 12px; color: #cdd8e8; line-height: 1.3; }
+  .log-event strong { color: #e8f0f8; }
+  .log-time {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+ 
+  .rp-action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .rp-action {
+    background: var(--navy2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all .15s;
+    text-align: left;
+  }
+  .rp-action:hover { border-color: var(--teal); background: var(--navy3); }
+  .rp-action-icon { font-size: 16px; margin-bottom: 4px; }
+  .rp-action-label {
+    font-family: var(--head);
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+ 
+  /* ── LOG RESPONSE MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 13, 26, .8);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--navy1);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    width: 480px;
+    max-width: 95vw;
+    box-shadow: 0 24px 80px rgba(0,0,0,.6);
+  }
+  .modal-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-title {
+    font-family: var(--head);
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .modal-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    transition: color .15s;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .form-group label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 5px;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    background: var(--navy2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 8px 10px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--teal);
+  }
+  .form-group textarea { resize: vertical; min-height: 70px; }
+  .form-group select option { background: var(--navy1); }
+  .modal-footer {
+    padding: 12px 20px 18px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    border-top: 1px solid var(--border);
+  }
+ 
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--navy2);
+    border: 1px solid var(--teal);
+    border-radius: 6px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text);
+    box-shadow: 0 8px 32px rgba(0,0,0,.4);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all .3s ease;
+    z-index: 2000;
+    pointer-events: none;
+    max-width: 320px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-icon { color: var(--teal); font-size: 16px; }
+ 
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 12px;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 40px;
+  }
+  .empty-icon { font-size: 40px; opacity: .4; }
+  .empty-title { font-family: var(--head); font-size: 18px; color: var(--text); }
+  .empty-sub { font-size: 13px; line-height: 1.5; }
+ 
+  /* ── UTIL ── */
+  .flex { display: flex; }
+  .gap8 { gap: 8px; }
+  .items-center { align-items: center; }
+  .ml-auto { margin-left: auto; }
+  .text-teal { color: var(--teal); }
+  .text-amber { color: var(--amber); }
+  .text-red { color: var(--red); }
+  .text-dim { color: var(--text-dim); }
+  .mono { font-family: var(--mono); }
+ 
+  /* pulse animation for active dot */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .4; }
+  }
+  .dot-active { animation: pulse 2s infinite; }
+</style>
+</head>
+<body>
+ 
+<!-- HEADER -->
+<header>
+  <a class="logo" href="index.html">Case<span>Zero</span></a>
+  <span class="header-badge">Lien Tracker · Beta</span>
+  <nav class="header-nav">
+    <a href="index.html">Home</a>
+    <a href="counsel.html">Counsel ↗</a>
+    <a href="demo.html">Pipeline</a>
+    <a href="track.html" class="active">Tracker</a>
+    <button class="header-btn" onclick="openModal('log')">+ Log Response</button>
+  </nav>
+</header>
+ 
+<!-- APP SHELL -->
+<div class="app">
+ 
+  <!-- SIDEBAR: CASE LIST -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <h2>Active Lien Cases</h2>
+      <input class="search-box" type="text" placeholder="Search by client or case #" oninput="filterCases(this.value)">
+      <div class="filter-row">
+        <button class="filter-chip active" onclick="setFilter(this, 'all')">All</button>
+        <button class="filter-chip" onclick="setFilter(this, 'negotiating')">Active</button>
+        <button class="filter-chip" onclick="setFilter(this, 'deadline')">Deadline</button>
+        <button class="filter-chip" onclick="setFilter(this, 'resolved')">Closed</button>
+      </div>
+    </div>
+    <div class="case-list" id="caseList"></div>
+  </aside>
+ 
+  <!-- MAIN PANEL -->
+  <main class="main" id="mainPanel">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">⚖</div>
+      <div class="empty-title">Select a case</div>
+      <div class="empty-sub">Click any case on the left to view lien status,<br>negotiation timeline, and disbursement waterfall.</div>
+    </div>
+    <div id="caseDetail" style="display:none; display:flex; flex-direction:column; gap:18px;"></div>
+  </main>
+ 
+  <!-- RIGHT PANEL -->
+  <aside class="right-panel" id="rightPanel">
+    <div class="rp-section">
+      <div class="rp-label">Quick Actions</div>
+      <div class="rp-action-grid">
+        <div class="rp-action" onclick="openModal('log')">
+          <div class="rp-action-icon">📥</div>
+          <div class="rp-action-label">Log Response</div>
+        </div>
+        <div class="rp-action" onclick="openModal('letter')">
+          <div class="rp-action-icon">✉️</div>
+          <div class="rp-action-label">Draft Follow-up</div>
+        </div>
+        <div class="rp-action" onclick="showToast('Waterfall PDF generated')">
+          <div class="rp-action-icon">📊</div>
+          <div class="rp-action-label">Export Waterfall</div>
+        </div>
+        <div class="rp-action" onclick="openModal('close')">
+          <div class="rp-action-icon">✅</div>
+          <div class="rp-action-label">Close Lien</div>
+        </div>
+      </div>
+    </div>
+    <div class="rp-section" id="activityLog">
+      <div class="rp-label">Activity Log</div>
+      <!-- populated by JS -->
+    </div>
+  </aside>
+ 
+</div><!-- /app -->
+ 
+<!-- LOG RESPONSE MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this) closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle">Log Lienholder Response</div>
+        <div class="modal-sub" id="modalSub">Rodriguez v. State Farm · #4821</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- populated by JS -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitModal()">Save</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <span id="toastMsg">Saved</span>
+</div>
+ 
+<script>
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const CASES = [
+  {
+    id: '4821',
+    client: 'Rodriguez',
+    caption: 'Rodriguez v. State Farm',
+    type: 'MVA',
+    state: 'MD',
+    gross: 23500,
+    attorney: 'A. Okonkwo',
+    paralegal: 'M. Torres',
+    status: 'negotiating',
+    progress: 62,
+    liens: [
+      {
+        id: 'L1', type: 'Medicare', badge: 'badge-medicare',
+        original: 8420, reduced: 5472, finalAmount: null,
+        status: 'negotiating',
+        lienholder: 'Medicare (CMS)',
+        lastAction: 'Counter offer received — $6,100',
+        deadline: '2026-06-14',
+        notes: 'Ahlborn proportional reduction applied. CMS countered above calc. Follow up required.',
+        timeline: [
+          { event: 'Lien detected via Filevine', note: 'Original lien: $8,420', date: 'May 2', dot: 'teal' },
+          { event: 'Ahlborn reduction calculated', note: 'Proportional: 65% → $5,472', date: 'May 3', dot: 'teal' },
+          { event: 'Reduction letter sent to CMS', note: 'Via certified mail + fax', date: 'May 5', dot: 'teal' },
+          { event: 'CMS counter received: $6,100', note: 'Above our calc — escalating', date: 'May 12', dot: 'pending' },
+          { event: 'Follow-up response due', note: 'Deadline: June 14', date: 'Jun 14', dot: 'future' },
+        ]
+      },
+      {
+        id: 'L2', type: 'Med Provider', badge: 'badge-medprov',
+        original: 3800, reduced: 1900, finalAmount: 1900,
+        status: 'resolved',
+        lienholder: 'Capital Orthopaedics',
+        lastAction: 'Settled at 50% — $1,900',
+        deadline: null,
+        notes: 'Agreed to 50% reduction. Letter of protection honored.',
+        timeline: [
+          { event: 'LOP lien logged', note: 'Capital Orthopaedics — $3,800', date: 'May 2', dot: 'teal' },
+          { event: 'Reduction request sent', note: '50% offer per DMV benchmark', date: 'May 6', dot: 'teal' },
+          { event: 'Provider accepted — $1,900', note: 'Resolved ✓', date: 'May 15', dot: 'teal' },
+        ]
+      },
+      {
+        id: 'L3', type: 'ERISA', badge: 'badge-erisa',
+        original: 6250, reduced: 3125, finalAmount: null,
+        status: 'sent',
+        lienholder: 'Anthem Blue Cross (ERISA)',
+        lastAction: 'Reduction letter sent — awaiting response',
+        deadline: '2026-06-28',
+        notes: 'Self-funded plan. MSP rules apply. 14-day response window.',
+        timeline: [
+          { event: 'ERISA plan type confirmed', note: 'Self-funded — MSP rules apply', date: 'May 4', dot: 'teal' },
+          { event: 'Reduction letter sent — $3,125', note: '50% request per Ahlborn', date: 'May 10', dot: 'teal' },
+          { event: 'Awaiting response', note: '14-day window. Due June 28', date: 'Jun 28', dot: 'future' },
+        ]
+      }
+    ],
+    waterfall: [
+      { label: 'Gross Settlement', amount: 23500, pct: 100, color: '#1a2a44' },
+      { label: 'Attorney Fees (33%)', amount: 7755, pct: 33, color: '#243650' },
+      { label: 'Costs & Expenses', amount: 1200, pct: 5, color: '#243650' },
+      { label: 'Medicare Lien (pending)', amount: null, pct: null, color: '#f5a62344' },
+      { label: 'ERISA Lien (pending)', amount: null, pct: null, color: '#f5a62344' },
+      { label: 'Med Provider Lien', amount: 1900, pct: 8, color: '#4caf8444' },
+      { label: 'Client Recovery (est.)', amount: 5645, pct: 24, color: '#00c9a744', client: true },
+    ],
+    activity: [
+      { icon: '📥', event: '<strong>CMS countered</strong> at $6,100 on Medicare lien', time: 'May 12, 3:41 PM' },
+      { icon: '✅', event: '<strong>Capital Orthopaedics</strong> accepted $1,900 settlement', time: 'May 15, 11:09 AM' },
+      { icon: '✉️', event: '<strong>ERISA letter sent</strong> to Anthem — $3,125 reduction request', time: 'May 10, 9:22 AM' },
+      { icon: '📋', event: 'Case opened in tracker — 3 liens identified', time: 'May 2, 8:00 AM' },
+    ]
+  },
+  {
+    id: '4799',
+    client: 'Okafor',
+    caption: 'Okafor v. Enterprise Rent-A-Car',
+    type: 'MVA',
+    state: 'DC',
+    gross: 47000,
+    attorney: 'J. Williams',
+    paralegal: 'S. Park',
+    status: 'negotiating',
+    progress: 38,
+    liens: [
+      {
+        id: 'L1', type: 'Medicare', badge: 'badge-medicare',
+        original: 14200, reduced: 9230, finalAmount: null,
+        status: 'sent',
+        lienholder: 'Medicare (CMS)',
+        lastAction: 'Reduction letter sent — awaiting CMS response',
+        deadline: '2026-07-02',
+        notes: 'Complex cervical + SLAP tear. CMS deadline in 45 days.',
+        timeline: [
+          { event: 'Medicare lien detected', note: 'Original: $14,200', date: 'May 8', dot: 'teal' },
+          { event: 'Ahlborn calc completed', note: 'Proportional reduction: $9,230', date: 'May 9', dot: 'teal' },
+          { event: 'Reduction letter sent', note: 'Awaiting CMS — due Jul 2', date: 'Jul 2', dot: 'future' },
+        ]
+      },
+      {
+        id: 'L2', type: 'Med Provider', badge: 'badge-medprov',
+        original: 5100, reduced: 2550, finalAmount: null,
+        status: 'negotiating',
+        lienholder: 'Capitol Spine & Pain',
+        lastAction: 'Countered at $3,200 — below our floor',
+        deadline: '2026-06-20',
+        notes: 'Counter is above our 50% target. Need attorney approval to hold firm.',
+        timeline: [
+          { event: 'LOP lien logged — $5,100', note: 'Capitol Spine & Pain', date: 'May 8', dot: 'teal' },
+          { event: 'Reduction offer sent — $2,550', note: '50% reduction request', date: 'May 11', dot: 'teal' },
+          { event: 'Provider countered: $3,200', note: 'Negotiating — floor is $2,550', date: 'May 16', dot: 'pending' },
+        ]
+      }
+    ],
+    waterfall: [
+      { label: 'Gross Settlement', amount: 47000, pct: 100, color: '#1a2a44' },
+      { label: 'Attorney Fees (33%)', amount: 15510, pct: 33, color: '#243650' },
+      { label: 'Costs & Expenses', amount: 2300, pct: 5, color: '#243650' },
+      { label: 'Medicare Lien (pending)', amount: null, pct: null, color: '#f5a62344' },
+      { label: 'Med Provider Lien (pending)', amount: null, pct: null, color: '#f5a62344' },
+      { label: 'Client Recovery (est.)', amount: 16940, pct: 36, color: '#00c9a744', client: true },
+    ],
+    activity: [
+      { icon: '🔄', event: '<strong>Capitol Spine</strong> countered at $3,200 — below floor', time: 'May 16, 2:15 PM' },
+      { icon: '✉️', event: '<strong>Medicare reduction letter</strong> sent to CMS', time: 'May 9, 10:04 AM' },
+      { icon: '📋', event: '2 liens identified — case opened', time: 'May 8, 8:00 AM' },
+    ]
+  },
+  {
+    id: '4812',
+    client: 'Washington',
+    caption: 'Washington v. Chevy Chase Pavilion',
+    type: 'Slip & Fall',
+    state: 'DC',
+    gross: 31000,
+    attorney: 'A. Okonkwo',
+    paralegal: 'M. Torres',
+    status: 'overdue',
+    progress: 50,
+    liens: [
+      {
+        id: 'L1', type: 'Medicaid', badge: 'badge-medicaid',
+        original: 9800, reduced: 4900, finalAmount: null,
+        status: 'overdue',
+        lienholder: 'DC Medicaid (DHCF)',
+        lastAction: 'Response overdue — 30 days since letter sent',
+        deadline: '2026-05-10',
+        notes: 'DHCF 30-day window elapsed. Escalation required.',
+        timeline: [
+          { event: 'Medicaid lien detected — $9,800', note: 'DC DHCF', date: 'Apr 5', dot: 'teal' },
+          { event: 'Reduction request sent', note: '$4,900 — 50% DC rule', date: 'Apr 10', dot: 'teal' },
+          { event: 'Response overdue', note: '30-day window elapsed May 10', date: 'May 10', dot: 'warn' },
+          { event: 'Escalation letter required', note: 'Action needed', date: 'ASAP', dot: 'future' },
+        ]
+      },
+      {
+        id: 'L2', type: 'Med Provider', badge: 'badge-medprov',
+        original: 4200, reduced: 2100, finalAmount: 2100,
+        status: 'resolved',
+        lienholder: 'GWU Hospital',
+        lastAction: 'Settled — $2,100',
+        deadline: null,
+        notes: 'Accepted 50% reduction. Cleared.',
+        timeline: [
+          { event: 'GWU Hospital lien — $4,200', note: 'LOP', date: 'Apr 5', dot: 'teal' },
+          { event: 'Resolved at $2,100', note: 'Accepted 50% ✓', date: 'Apr 22', dot: 'teal' },
+        ]
+      }
+    ],
+    waterfall: [
+      { label: 'Gross Settlement', amount: 31000, pct: 100, color: '#1a2a44' },
+      { label: 'Attorney Fees (33%)', amount: 10230, pct: 33, color: '#243650' },
+      { label: 'Costs & Expenses', amount: 1800, pct: 6, color: '#243650' },
+      { label: 'Medicaid Lien (pending)', amount: null, pct: null, color: '#e0555522' },
+      { label: 'GWU Hospital Lien', amount: 2100, pct: 7, color: '#4caf8444' },
+      { label: 'Client Recovery (est.)', amount: 9870, pct: 32, color: '#00c9a744', client: true },
+    ],
+    activity: [
+      { icon: '⚠️', event: '<strong>DC Medicaid</strong> response overdue — escalation needed', time: 'May 10, 8:00 AM' },
+      { icon: '✅', event: '<strong>GWU Hospital</strong> settled at $2,100', time: 'Apr 22, 4:30 PM' },
+      { icon: '📋', event: 'Case opened — 2 liens identified', time: 'Apr 5, 9:15 AM' },
+    ]
+  },
+  {
+    id: '4791',
+    client: 'Kim',
+    caption: 'Kim v. Washington Metro',
+    type: 'Transit',
+    state: 'DC',
+    gross: 78500,
+    attorney: 'J. Williams',
+    paralegal: 'S. Park',
+    status: 'active',
+    progress: 85,
+    liens: [
+      {
+        id: 'L1', type: 'Medicare', badge: 'badge-medicare',
+        original: 18600, reduced: 11160, finalAmount: 11160,
+        status: 'resolved',
+        lienholder: 'Medicare (CMS)',
+        lastAction: 'Final approval — $11,160',
+        deadline: null,
+        notes: 'CMS accepted proportional reduction. Cleared.',
+        timeline: [
+          { event: 'Medicare lien — $18,600', note: 'CMS notified', date: 'Mar 14', dot: 'teal' },
+          { event: 'Ahlborn reduction sent — $11,160', note: '60% proportional', date: 'Mar 18', dot: 'teal' },
+          { event: 'CMS accepted — $11,160', note: 'Resolved ✓', date: 'Apr 3', dot: 'teal' },
+        ]
+      },
+      {
+        id: 'L2', type: 'ERISA', badge: 'badge-erisa',
+        original: 7400, reduced: 3700, finalAmount: 3700,
+        status: 'resolved',
+        lienholder: 'GEHA (Federal ERISA)',
+        lastAction: 'Accepted 50% — $3,700',
+        deadline: null,
+        notes: 'Federal employee plan. FEHB rules applied. Accepted first offer.',
+        timeline: [
+          { event: 'FEHB plan confirmed', note: 'GEHA — federal employee', date: 'Mar 15', dot: 'teal' },
+          { event: 'Reduction request — $3,700', note: '50% FEHB benchmark', date: 'Mar 20', dot: 'teal' },
+          { event: 'GEHA accepted — $3,700', note: 'Resolved ✓', date: 'Apr 8', dot: 'teal' },
+        ]
+      }
+    ],
+    waterfall: [
+      { label: 'Gross Settlement', amount: 78500, pct: 100, color: '#1a2a44' },
+      { label: 'Attorney Fees (33%)', amount: 25905, pct: 33, color: '#243650' },
+      { label: 'Costs & Expenses', amount: 3200, pct: 4, color: '#243650' },
+      { label: 'Medicare Lien', amount: 11160, pct: 14, color: '#6db8e844' },
+      { label: 'ERISA (GEHA)', amount: 3700, pct: 5, color: '#a78bfa44' },
+      { label: 'Client Recovery', amount: 34535, pct: 44, color: '#00c9a744', client: true },
+    ],
+    activity: [
+      { icon: '✅', event: '<strong>GEHA accepted</strong> $3,700 — ERISA lien cleared', time: 'Apr 8, 11:40 AM' },
+      { icon: '✅', event: '<strong>CMS accepted</strong> $11,160 — Medicare cleared', time: 'Apr 3, 2:10 PM' },
+      { icon: '📋', event: 'Ready for waterfall disbursement', time: 'Apr 9, 9:00 AM' },
+    ]
+  }
+];
+ 
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let selectedCaseId = null;
+let currentFilter = 'all';
+let currentModalType = null;
+ 
+// ─────────────────────────────────────────────
+// RENDER CASE LIST
+// ─────────────────────────────────────────────
+function renderCaseList(filter = 'all', search = '') {
+  const list = document.getElementById('caseList');
+  list.innerHTML = '';
+  const filtered = CASES.filter(c => {
+    const matchFilter = filter === 'all' ||
+      (filter === 'negotiating' && (c.status === 'negotiating' || c.status === 'active')) ||
+      (filter === 'deadline' && c.status === 'overdue') ||
+      (filter === 'resolved' && c.liens.every(l => l.status === 'resolved'));
+    const matchSearch = search === '' ||
+      c.client.toLowerCase().includes(search.toLowerCase()) ||
+      c.id.includes(search) ||
+      c.caption.toLowerCase().includes(search.toLowerCase());
+    return matchFilter && matchSearch;
+  });
+ 
+  filtered.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'case-item' + (c.id === selectedCaseId ? ' active' : '');
+    el.onclick = () => selectCase(c.id);
+    const dotClass = c.status === 'overdue' ? 'dot-warning' : c.status === 'resolved' ? 'dot-closed' : c.status === 'negotiating' ? 'dot-active' : 'dot-active';
+    const resolvedCount = c.liens.filter(l => l.status === 'resolved').length;
+    const overdueCount = c.liens.filter(l => l.status === 'overdue').length;
+    const deadlineSoon = c.liens.some(l => l.deadline && daysUntil(l.deadline) <= 14 && daysUntil(l.deadline) > 0);
+ 
+    el.innerHTML = `
+      <div class="case-item-top">
+        <div class="case-name">${c.caption}</div>
+        <div class="case-status-dot ${dotClass}"></div>
+      </div>
+      <div class="case-meta">
+        <span class="case-id">#${c.id}</span>
+        <span>${c.type} · ${c.state}</span>
+        <span class="lien-count">${c.liens.length} liens</span>
+      </div>
+      <div class="case-bar">
+        <div class="progress-track"><div class="progress-fill" style="width:${c.progress}%"></div></div>
+        <span class="case-pct">${resolvedCount}/${c.liens.length} resolved</span>
+        ${overdueCount > 0 ? `<span class="deadline-flag">⚠ ${overdueCount} overdue</span>` : ''}
+        ${deadlineSoon && !overdueCount ? `<span class="deadline-flag">⏰ due soon</span>` : ''}
+      </div>
+    `;
+    list.appendChild(el);
+  });
+ 
+  if (filtered.length === 0) {
+    list.innerHTML = `<div style="padding:24px 16px; color:var(--text-dim); font-size:13px; text-align:center;">No cases match this filter.</div>`;
+  }
+}
+ 
+// ─────────────────────────────────────────────
+// SELECT CASE
+// ─────────────────────────────────────────────
+function selectCase(id) {
+  selectedCaseId = id;
+  const c = CASES.find(x => x.id === id);
+  renderCaseList(currentFilter);
+ 
+  document.getElementById('emptyState').style.display = 'none';
+  const detail = document.getElementById('caseDetail');
+  detail.style.display = 'flex';
+  detail.innerHTML = buildCaseDetail(c);
+  renderActivityLog(c);
+ 
+  // animate progress bars
+  requestAnimationFrame(() => {
+    detail.querySelectorAll('.progress-fill, .wf-fill').forEach(el => {
+      el.style.transition = 'width .6s ease';
+    });
+  });
+}
+ 
+function buildCaseDetail(c) {
+  const totalOriginal = c.liens.reduce((s, l) => s + l.original, 0);
+  const totalReduced = c.liens.reduce((s, l) => s + l.reduced, 0);
+  const totalSaved = totalOriginal - totalReduced;
+  const resolvedCount = c.liens.filter(l => l.status === 'resolved').length;
+  const pendingCount = c.liens.filter(l => l.status !== 'resolved').length;
+ 
+  return `
+    <!-- CASE HEADER -->
+    <div class="case-header">
+      <div>
+        <div class="case-title">${c.caption}</div>
+        <div class="case-subtitle">
+          <span class="case-id text-teal">#${c.id}</span>
+          <span class="sep">·</span>
+          <span>${c.type} · ${c.state}</span>
+          <span class="sep">·</span>
+          <span>Gross: <span class="mono">${fmt(c.gross)}</span></span>
+          <span class="sep">·</span>
+          <span>Atty: ${c.attorney}</span>
+          <span class="sep">·</span>
+          <span>Paralegal: ${c.paralegal}</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-amber" onclick="openModal('log')">+ Log Response</button>
+        <button class="btn btn-primary" onclick="showToast('Generating waterfall PDF…')">Export PDF</button>
+      </div>
+    </div>
+ 
+    <!-- STAT STRIP -->
+    <div class="stat-strip">
+      <div class="stat-card">
+        <div class="stat-label">Total Lien Exposure</div>
+        <div class="stat-value">${fmt(totalOriginal)}</div>
+        <div class="stat-sub">${c.liens.length} liens identified</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Reduction Target</div>
+        <div class="stat-value teal">${fmt(totalReduced)}</div>
+        <div class="stat-sub up">↓ ${fmt(totalSaved)} saved for client</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Liens Resolved</div>
+        <div class="stat-value ${resolvedCount === c.liens.length ? 'teal' : 'amber'}">${resolvedCount} / ${c.liens.length}</div>
+        <div class="stat-sub">${pendingCount} pending negotiation</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Case Progress</div>
+        <div class="stat-value">${c.progress}%</div>
+        <div class="stat-sub">${c.status === 'overdue' ? '<span style="color:var(--red)">⚠ Action required</span>' : 'On track'}</div>
+      </div>
+    </div>
+ 
+    <!-- LIEN TABLE -->
+    <div>
+      <div class="section-label">Lien Breakdown</div>
+      <table class="lien-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Lienholder</th>
+            <th>Original</th>
+            <th>Reduction Target</th>
+            <th>Final</th>
+            <th>Status</th>
+            <th>Deadline</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${c.liens.map(l => buildLienRow(l)).join('')}
+        </tbody>
+      </table>
+    </div>
+ 
+    <!-- TIMELINE + WATERFALL SIDE BY SIDE -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+      <div>
+        <div class="section-label">Negotiation Timeline</div>
+        ${buildTimeline(c.liens[0])}
+      </div>
+      <div>
+        <div class="section-label">Disbursement Waterfall</div>
+        ${buildWaterfall(c)}
+      </div>
+    </div>
+  `;
+}
+ 
+function buildLienRow(l) {
+  const saved = l.original - l.reduced;
+  const savedPct = Math.round(saved / l.original * 100);
+  const deadlineDays = l.deadline ? daysUntil(l.deadline) : null;
+  const deadlineClass = deadlineDays === null ? '' : deadlineDays < 0 ? 'deadline-overdue' : deadlineDays <= 14 ? 'deadline-soon' : 'deadline-ok';
+  const deadlineText = deadlineDays === null ? '—' : deadlineDays < 0 ? `${Math.abs(deadlineDays)}d overdue` : deadlineDays === 0 ? 'Today' : `${deadlineDays}d`;
+ 
+  return `
+    <tr onclick="showLienDetail('${l.id}')">
+      <td><span class="lien-type-badge ${l.badge}">${l.type}</span></td>
+      <td style="color:var(--text); font-size:13px;">${l.lienholder}</td>
+      <td class="amount-col">${fmt(l.original)}</td>
+      <td>
+        <span class="amount-col amount-reduced">${fmt(l.reduced)}</span>
+        <span class="amount-saved"> −${savedPct}%</span>
+      </td>
+      <td class="amount-col">${l.finalAmount ? `<span class="text-teal">${fmt(l.finalAmount)}</span>` : '<span class="text-dim">pending</span>'}</td>
+      <td>${buildStatusPill(l.status)}</td>
+      <td class="${deadlineClass} mono" style="font-size:12px;">${deadlineText}</td>
+      <td>
+        <div class="action-cell">
+          <button class="icon-btn" title="Log response" onclick="event.stopPropagation(); openModal('log')">📥</button>
+          <button class="icon-btn" title="View timeline" onclick="event.stopPropagation(); showLienDetail('${l.id}')">→</button>
+        </div>
+      </td>
+    </tr>
+  `;
+}
+ 
+function buildStatusPill(status) {
+  const map = {
+    detected:    { label: 'Detected',    cls: 'status-detected',    dot: 'var(--text-dim)' },
+    sent:        { label: 'Letter Sent', cls: 'status-sent',        dot: '#6db8e8' },
+    negotiating: { label: 'Negotiating', cls: 'status-negotiating', dot: 'var(--amber)' },
+    resolved:    { label: 'Resolved',    cls: 'status-resolved',    dot: 'var(--teal)' },
+    overdue:     { label: 'Overdue',     cls: 'status-overdue',     dot: 'var(--red)' },
+  };
+  const s = map[status] || map.detected;
+  return `<span class="status-pill ${s.cls}"><span class="pill-dot" style="background:${s.dot}"></span>${s.label}</span>`;
+}
+ 
+function buildTimeline(lien) {
+  return `<div class="timeline">${lien.timeline.map((t, i) => `
+    <div class="tl-item">
+      <div class="tl-spine">
+        <div class="tl-dot ${t.dot === 'pending' ? 'pending' : t.dot === 'future' ? 'future' : t.dot === 'warn' ? 'warn' : ''}"></div>
+        ${i < lien.timeline.length - 1 ? '<div class="tl-line"></div>' : ''}
+      </div>
+      <div class="tl-content">
+        <div class="tl-event ${t.dot === 'future' ? 'future' : ''}">${t.event}</div>
+        ${t.note ? `<div class="tl-note">${t.note}</div>` : ''}
+        <div class="tl-date ${t.dot === 'pending' || t.dot === 'future' ? 'soon' : ''}">${t.date}</div>
+      </div>
+    </div>
+  `).join('')}</div>`;
+}
+ 
+function buildWaterfall(c) {
+  const gross = c.gross;
+  return `<div class="waterfall">${c.waterfall.map(row => `
+    <div class="wf-row ${row.client ? 'client' : ''}">
+      <div class="wf-label">${row.label}</div>
+      <div class="wf-amount ${row.amount === null ? 'pending' : ''}">${row.amount !== null ? fmt(row.amount) : 'TBD'}</div>
+      <div class="wf-track">
+        <div class="wf-fill" style="width:${row.pct || 0}%; background:${row.client ? 'var(--teal)' : row.color.includes('f5a623') ? 'var(--amber)' : 'var(--border2)'}"></div>
+      </div>
+    </div>
+  `).join('')}</div>`;
+}
+ 
+function showLienDetail(lienId) {
+  if (!selectedCaseId) return;
+  const c = CASES.find(x => x.id === selectedCaseId);
+  const lien = c.liens.find(l => l.id === lienId);
+  if (!lien) return;
+  // Update the timeline section
+  const detail = document.getElementById('caseDetail');
+  const tlContainer = detail.querySelector('.timeline');
+  if (tlContainer) {
+    tlContainer.parentElement.innerHTML = `<div class="section-label">${lien.type} · ${lien.lienholder}</div>${buildTimeline(lien)}`;
+  }
+}
+ 
+// ─────────────────────────────────────────────
+// ACTIVITY LOG
+// ─────────────────────────────────────────────
+function renderActivityLog(c) {
+  const panel = document.getElementById('activityLog');
+  panel.innerHTML = `
+    <div class="rp-label">Activity Log · #${c.id}</div>
+    ${c.activity.map(a => `
+      <div class="log-item">
+        <div class="log-icon">${a.icon}</div>
+        <div class="log-body">
+          <div class="log-event">${a.event}</div>
+          <div class="log-time">${a.time}</div>
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+ 
+// ─────────────────────────────────────────────
+// MODALS
+// ─────────────────────────────────────────────
+const MODAL_CONFIGS = {
+  log: {
+    title: 'Log Lienholder Response',
+    body: `
+      <div class="form-group">
+        <label>Lienholder</label>
+        <select>
+          <option>Medicare (CMS)</option>
+          <option>Anthem Blue Cross (ERISA)</option>
+          <option>Capital Orthopaedics</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Response Type</label>
+        <select>
+          <option>Counter offer received</option>
+          <option>Accepted our offer</option>
+          <option>Rejected — escalating</option>
+          <option>No response / follow-up needed</option>
+          <option>Request for additional info</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Counter Amount (if applicable)</label>
+        <input type="text" placeholder="e.g. $6,100">
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea placeholder="Any context on the response, next steps, or attorney notes…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Next Deadline</label>
+        <input type="date">
+      </div>
+    `
+  },
+  letter: {
+    title: 'Draft Follow-up Letter',
+    body: `
+      <div class="form-group">
+        <label>Letter Type</label>
+        <select>
+          <option>Follow-up — no response</option>
+          <option>Counter-counter offer</option>
+          <option>Escalation to supervisor</option>
+          <option>Final demand before dispute</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Lienholder</label>
+        <select>
+          <option>Medicare (CMS)</option>
+          <option>Anthem Blue Cross (ERISA)</option>
+          <option>Capital Orthopaedics</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Notes for AI Drafter</label>
+        <textarea placeholder="Any specific points to include or tone guidance…"></textarea>
+      </div>
+    `
+  },
+  close: {
+    title: 'Close / Resolve Lien',
+    body: `
+      <div class="form-group">
+        <label>Lienholder</label>
+        <select>
+          <option>Medicare (CMS)</option>
+          <option>Anthem Blue Cross (ERISA)</option>
+          <option>Capital Orthopaedics</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Final Agreed Amount</label>
+        <input type="text" placeholder="e.g. $5,472">
+      </div>
+      <div class="form-group">
+        <label>Resolution Date</label>
+        <input type="date">
+      </div>
+      <div class="form-group">
+        <label>Closing Notes</label>
+        <textarea placeholder="Any final notes for the file…"></textarea>
+      </div>
+    `
+  }
+};
+ 
+function openModal(type) {
+  currentModalType = type;
+  const cfg = MODAL_CONFIGS[type];
+  const c = CASES.find(x => x.id === selectedCaseId);
+  document.getElementById('modalTitle').textContent = cfg.title;
+  document.getElementById('modalSub').textContent = c ? `${c.caption} · #${c.id}` : 'Select a case first';
+  document.getElementById('modalBody').innerHTML = cfg.body;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+ 
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  currentModalType = null;
+}
+ 
+function submitModal() {
+  closeModal();
+  const msgs = {
+    log: 'Response logged — timeline updated',
+    letter: 'Opening in CaseZero Counsel…',
+    close: 'Lien marked as resolved',
+  };
+  showToast(msgs[currentModalType] || 'Saved');
+}
+ 
+// ─────────────────────────────────────────────
+// FILTERS + SEARCH
+// ─────────────────────────────────────────────
+function setFilter(btn, filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCaseList(filter, document.querySelector('.search-box').value);
+}
+ 
+function filterCases(val) {
+  renderCaseList(currentFilter, val);
+}
+ 
+// ─────────────────────────────────────────────
+// UTILS
+// ─────────────────────────────────────────────
+function fmt(n) {
+  return '$' + n.toLocaleString();
+}
+function daysUntil(dateStr) {
+  const now = new Date('2026-05-19');
+  const target = new Date(dateStr);
+  return Math.round((target - now) / 86400000);
+}
+ 
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+ 
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+renderCaseList();
+// Auto-select first case
+selectCase(CASES[0].id);
+</script>
+</body>
+</html>
