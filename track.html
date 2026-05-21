@@ -31,9 +31,9 @@
     --head:    'Barlow Condensed', sans-serif;
     --body:    'Barlow', sans-serif;
   }
- 
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
- 
+
   body {
     background: var(--navy);
     color: var(--text);
@@ -44,7 +44,7 @@
     flex-direction: column;
     overflow: hidden;
   }
- 
+
   /* ── HEADER ── */
   header {
     background: var(--navy1);
@@ -110,7 +110,7 @@
     transition: background .15s;
   }
   .header-btn:hover { background: var(--teal-d); }
- 
+
   /* ── LAYOUT ── */
   .app {
     display: grid;
@@ -119,7 +119,7 @@
     flex: 1;
     overflow: hidden;
   }
- 
+
   /* ── SIDEBAR: CASE LIST ── */
   .sidebar {
     background: var(--navy1);
@@ -155,7 +155,7 @@
   }
   .search-box::placeholder { color: var(--text-dim); }
   .search-box:focus { border-color: var(--teal); }
- 
+
   .filter-row {
     display: flex;
     gap: 4px;
@@ -179,7 +179,7 @@
     color: var(--teal);
     background: var(--teal-dim);
   }
- 
+
   .case-list {
     overflow-y: auto;
     flex: 1;
@@ -188,7 +188,7 @@
   .case-list::-webkit-scrollbar { width: 4px; }
   .case-list::-webkit-scrollbar-track { background: transparent; }
   .case-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
- 
+
   .case-item {
     padding: 11px 16px;
     cursor: pointer;
@@ -226,7 +226,7 @@
   .dot-pending { background: var(--amber); }
   .dot-warning { background: var(--red); }
   .dot-closed { background: var(--text-dim); }
- 
+
   .case-meta {
     display: flex;
     align-items: center;
@@ -278,7 +278,7 @@
     align-items: center;
     gap: 3px;
   }
- 
+
   /* ── MAIN PANEL ── */
   .main {
     overflow-y: auto;
@@ -290,7 +290,7 @@
   .main::-webkit-scrollbar { width: 4px; }
   .main::-webkit-scrollbar-track { background: transparent; }
   .main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
- 
+
   .case-header {
     display: flex;
     align-items: flex-start;
@@ -344,7 +344,7 @@
   .btn-primary:hover { background: var(--teal-d); border-color: var(--teal-d); color: var(--navy); }
   .btn-amber { border-color: var(--amber); color: var(--amber); }
   .btn-amber:hover { background: var(--amber-dim); }
- 
+
   /* ── STAT STRIP ── */
   .stat-strip {
     display: grid;
@@ -382,7 +382,7 @@
     margin-top: 4px;
   }
   .stat-sub.up { color: var(--green); }
- 
+
   /* ── SECTION ── */
   .section-label {
     font-family: var(--head);
@@ -401,7 +401,7 @@
     height: 1px;
     background: var(--border);
   }
- 
+
   /* ── LIEN TABLE ── */
   .lien-table {
     width: 100%;
@@ -434,7 +434,7 @@
     vertical-align: middle;
   }
   .lien-table td:first-child { padding-left: 0; }
- 
+
   .lien-type-badge {
     display: inline-block;
     font-family: var(--mono);
@@ -450,11 +450,11 @@
   .badge-erisa    { color: #a78bfa; border-color: #a78bfa; background: #a78bfa22; }
   .badge-medicaid { color: var(--amber); border-color: var(--amber); background: var(--amber-dim); }
   .badge-wc       { color: #f97316; border-color: #f97316; background: #f9731622; }
- 
+
   .amount-col { font-family: var(--mono); font-size: 13px; color: #e8f0f8; }
   .amount-reduced { color: var(--teal); }
   .amount-saved { color: var(--green); font-size: 11px; }
- 
+
   .status-pill {
     display: inline-flex;
     align-items: center;
@@ -474,7 +474,7 @@
   .status-negotiating { color: var(--amber); border-color: var(--amber); background: var(--amber-dim); }
   .status-resolved    { color: var(--teal); border-color: var(--teal); background: var(--teal-dim); }
   .status-overdue     { color: var(--red); border-color: var(--red); background: var(--red-dim); }
- 
+
   .deadline-cell {
     font-family: var(--mono);
     font-size: 12px;
@@ -482,7 +482,7 @@
   .deadline-ok     { color: var(--text-dim); }
   .deadline-soon   { color: var(--amber); }
   .deadline-overdue{ color: var(--red); }
- 
+
   .action-cell {
     display: flex;
     gap: 6px;
@@ -502,7 +502,7 @@
     font-size: 13px;
   }
   .icon-btn:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-dim); }
- 
+
   /* ── TIMELINE ── */
   .timeline { display: flex; flex-direction: column; gap: 0; }
   .tl-item {
@@ -561,7 +561,7 @@
     margin-top: 3px;
   }
   .tl-date.soon { color: var(--amber); }
- 
+
   /* ── WATERFALL PREVIEW ── */
   .waterfall { display: flex; flex-direction: column; gap: 6px; }
   .wf-row {
@@ -599,7 +599,7 @@
   .wf-fill { height: 100%; border-radius: 2px; }
   .wf-row.client .wf-label { font-weight: 500; color: var(--teal); }
   .wf-row.client .wf-amount { color: var(--teal); font-weight: 500; }
- 
+
   /* ── RIGHT PANEL ── */
   .right-panel {
     background: var(--navy1);
@@ -611,7 +611,7 @@
   .right-panel::-webkit-scrollbar { width: 4px; }
   .right-panel::-webkit-scrollbar-track { background: transparent; }
   .right-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
- 
+
   .rp-section {
     padding: 16px;
     border-bottom: 1px solid var(--border);
@@ -624,7 +624,7 @@
     color: var(--text-dim);
     margin-bottom: 12px;
   }
- 
+
   .log-item {
     display: flex;
     gap: 10px;
@@ -652,7 +652,7 @@
     color: var(--text-dim);
     margin-top: 2px;
   }
- 
+
   .rp-action-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -676,7 +676,7 @@
     color: var(--text);
     line-height: 1.2;
   }
- 
+
   /* ── LOG RESPONSE MODAL ── */
   .modal-overlay {
     display: none;
@@ -760,7 +760,7 @@
     justify-content: flex-end;
     border-top: 1px solid var(--border);
   }
- 
+
   /* ── TOAST ── */
   .toast {
     position: fixed;
@@ -785,7 +785,7 @@
   }
   .toast.show { transform: translateY(0); opacity: 1; }
   .toast-icon { color: var(--teal); font-size: 16px; }
- 
+
   /* ── EMPTY STATE ── */
   .empty-state {
     display: flex;
@@ -801,7 +801,7 @@
   .empty-icon { font-size: 40px; opacity: .4; }
   .empty-title { font-family: var(--head); font-size: 18px; color: var(--text); }
   .empty-sub { font-size: 13px; line-height: 1.5; }
- 
+
   /* ── UTIL ── */
   .flex { display: flex; }
   .gap8 { gap: 8px; }
@@ -812,7 +812,7 @@
   .text-red { color: var(--red); }
   .text-dim { color: var(--text-dim); }
   .mono { font-family: var(--mono); }
- 
+
   /* pulse animation for active dot */
   @keyframes pulse {
     0%, 100% { opacity: 1; }
@@ -822,7 +822,7 @@
 </style>
 </head>
 <body>
- 
+
 <!-- HEADER -->
 <header>
   <a class="logo" href="index.html">Case<span>Zero</span></a>
@@ -832,13 +832,14 @@
     <a href="counsel.html">Counsel ↗</a>
     <a href="demo.html">Pipeline</a>
     <a href="track.html" class="active">Tracker</a>
+    <a href="privacy.html">Privacy</a>
     <button class="header-btn" onclick="openModal('log')">+ Log Response</button>
   </nav>
 </header>
- 
+
 <!-- APP SHELL -->
 <div class="app">
- 
+
   <!-- SIDEBAR: CASE LIST -->
   <aside class="sidebar">
     <div class="sidebar-head">
@@ -853,7 +854,7 @@
     </div>
     <div class="case-list" id="caseList"></div>
   </aside>
- 
+
   <!-- MAIN PANEL -->
   <main class="main" id="mainPanel">
     <div class="empty-state" id="emptyState">
@@ -863,7 +864,7 @@
     </div>
     <div id="caseDetail" style="display:none; display:flex; flex-direction:column; gap:18px;"></div>
   </main>
- 
+
   <!-- RIGHT PANEL -->
   <aside class="right-panel" id="rightPanel">
     <div class="rp-section">
@@ -892,9 +893,9 @@
       <!-- populated by JS -->
     </div>
   </aside>
- 
+
 </div><!-- /app -->
- 
+
 <!-- LOG RESPONSE MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this) closeModal()">
   <div class="modal">
@@ -914,13 +915,13 @@
     </div>
   </div>
 </div>
- 
+
 <!-- TOAST -->
 <div class="toast" id="toast">
   <span class="toast-icon">✓</span>
   <span id="toastMsg">Saved</span>
 </div>
- 
+
 <script>
 // ─────────────────────────────────────────────
 // DATA
@@ -1165,14 +1166,14 @@ const CASES = [
     ]
   }
 ];
- 
+
 // ─────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────
 let selectedCaseId = null;
 let currentFilter = 'all';
 let currentModalType = null;
- 
+
 // ─────────────────────────────────────────────
 // RENDER CASE LIST
 // ─────────────────────────────────────────────
@@ -1190,7 +1191,7 @@ function renderCaseList(filter = 'all', search = '') {
       c.caption.toLowerCase().includes(search.toLowerCase());
     return matchFilter && matchSearch;
   });
- 
+
   filtered.forEach(c => {
     const el = document.createElement('div');
     el.className = 'case-item' + (c.id === selectedCaseId ? ' active' : '');
@@ -1199,7 +1200,7 @@ function renderCaseList(filter = 'all', search = '') {
     const resolvedCount = c.liens.filter(l => l.status === 'resolved').length;
     const overdueCount = c.liens.filter(l => l.status === 'overdue').length;
     const deadlineSoon = c.liens.some(l => l.deadline && daysUntil(l.deadline) <= 14 && daysUntil(l.deadline) > 0);
- 
+
     el.innerHTML = `
       <div class="case-item-top">
         <div class="case-name">${c.caption}</div>
@@ -1219,12 +1220,12 @@ function renderCaseList(filter = 'all', search = '') {
     `;
     list.appendChild(el);
   });
- 
+
   if (filtered.length === 0) {
     list.innerHTML = `<div style="padding:24px 16px; color:var(--text-dim); font-size:13px; text-align:center;">No cases match this filter.</div>`;
   }
 }
- 
+
 // ─────────────────────────────────────────────
 // SELECT CASE
 // ─────────────────────────────────────────────
@@ -1232,13 +1233,13 @@ function selectCase(id) {
   selectedCaseId = id;
   const c = CASES.find(x => x.id === id);
   renderCaseList(currentFilter);
- 
+
   document.getElementById('emptyState').style.display = 'none';
   const detail = document.getElementById('caseDetail');
   detail.style.display = 'flex';
   detail.innerHTML = buildCaseDetail(c);
   renderActivityLog(c);
- 
+
   // animate progress bars
   requestAnimationFrame(() => {
     detail.querySelectorAll('.progress-fill, .wf-fill').forEach(el => {
@@ -1246,14 +1247,14 @@ function selectCase(id) {
     });
   });
 }
- 
+
 function buildCaseDetail(c) {
   const totalOriginal = c.liens.reduce((s, l) => s + l.original, 0);
   const totalReduced = c.liens.reduce((s, l) => s + l.reduced, 0);
   const totalSaved = totalOriginal - totalReduced;
   const resolvedCount = c.liens.filter(l => l.status === 'resolved').length;
   const pendingCount = c.liens.filter(l => l.status !== 'resolved').length;
- 
+
   return `
     <!-- CASE HEADER -->
     <div class="case-header">
@@ -1276,7 +1277,7 @@ function buildCaseDetail(c) {
         <button class="btn btn-primary" onclick="showToast('Generating waterfall PDF…')">Export PDF</button>
       </div>
     </div>
- 
+
     <!-- STAT STRIP -->
     <div class="stat-strip">
       <div class="stat-card">
@@ -1300,7 +1301,7 @@ function buildCaseDetail(c) {
         <div class="stat-sub">${c.status === 'overdue' ? '<span style="color:var(--red)">⚠ Action required</span>' : 'On track'}</div>
       </div>
     </div>
- 
+
     <!-- LIEN TABLE -->
     <div>
       <div class="section-label">Lien Breakdown</div>
@@ -1322,7 +1323,7 @@ function buildCaseDetail(c) {
         </tbody>
       </table>
     </div>
- 
+
     <!-- TIMELINE + WATERFALL SIDE BY SIDE -->
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
       <div>
@@ -1336,14 +1337,14 @@ function buildCaseDetail(c) {
     </div>
   `;
 }
- 
+
 function buildLienRow(l) {
   const saved = l.original - l.reduced;
   const savedPct = Math.round(saved / l.original * 100);
   const deadlineDays = l.deadline ? daysUntil(l.deadline) : null;
   const deadlineClass = deadlineDays === null ? '' : deadlineDays < 0 ? 'deadline-overdue' : deadlineDays <= 14 ? 'deadline-soon' : 'deadline-ok';
   const deadlineText = deadlineDays === null ? '—' : deadlineDays < 0 ? `${Math.abs(deadlineDays)}d overdue` : deadlineDays === 0 ? 'Today' : `${deadlineDays}d`;
- 
+
   return `
     <tr onclick="showLienDetail('${l.id}')">
       <td><span class="lien-type-badge ${l.badge}">${l.type}</span></td>
@@ -1365,7 +1366,7 @@ function buildLienRow(l) {
     </tr>
   `;
 }
- 
+
 function buildStatusPill(status) {
   const map = {
     detected:    { label: 'Detected',    cls: 'status-detected',    dot: 'var(--text-dim)' },
@@ -1377,7 +1378,7 @@ function buildStatusPill(status) {
   const s = map[status] || map.detected;
   return `<span class="status-pill ${s.cls}"><span class="pill-dot" style="background:${s.dot}"></span>${s.label}</span>`;
 }
- 
+
 function buildTimeline(lien) {
   return `<div class="timeline">${lien.timeline.map((t, i) => `
     <div class="tl-item">
@@ -1393,7 +1394,7 @@ function buildTimeline(lien) {
     </div>
   `).join('')}</div>`;
 }
- 
+
 function buildWaterfall(c) {
   const gross = c.gross;
   return `<div class="waterfall">${c.waterfall.map(row => `
@@ -1406,7 +1407,7 @@ function buildWaterfall(c) {
     </div>
   `).join('')}</div>`;
 }
- 
+
 function showLienDetail(lienId) {
   if (!selectedCaseId) return;
   const c = CASES.find(x => x.id === selectedCaseId);
@@ -1419,7 +1420,7 @@ function showLienDetail(lienId) {
     tlContainer.parentElement.innerHTML = `<div class="section-label">${lien.type} · ${lien.lienholder}</div>${buildTimeline(lien)}`;
   }
 }
- 
+
 // ─────────────────────────────────────────────
 // ACTIVITY LOG
 // ─────────────────────────────────────────────
@@ -1438,7 +1439,7 @@ function renderActivityLog(c) {
     `).join('')}
   `;
 }
- 
+
 // ─────────────────────────────────────────────
 // MODALS
 // ─────────────────────────────────────────────
@@ -1531,7 +1532,7 @@ const MODAL_CONFIGS = {
     `
   }
 };
- 
+
 function openModal(type) {
   currentModalType = type;
   const cfg = MODAL_CONFIGS[type];
@@ -1541,12 +1542,12 @@ function openModal(type) {
   document.getElementById('modalBody').innerHTML = cfg.body;
   document.getElementById('modalOverlay').classList.add('open');
 }
- 
+
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
   currentModalType = null;
 }
- 
+
 function submitModal() {
   closeModal();
   const msgs = {
@@ -1556,7 +1557,7 @@ function submitModal() {
   };
   showToast(msgs[currentModalType] || 'Saved');
 }
- 
+
 // ─────────────────────────────────────────────
 // FILTERS + SEARCH
 // ─────────────────────────────────────────────
@@ -1566,11 +1567,11 @@ function setFilter(btn, filter) {
   btn.classList.add('active');
   renderCaseList(filter, document.querySelector('.search-box').value);
 }
- 
+
 function filterCases(val) {
   renderCaseList(currentFilter, val);
 }
- 
+
 // ─────────────────────────────────────────────
 // UTILS
 // ─────────────────────────────────────────────
@@ -1582,14 +1583,14 @@ function daysUntil(dateStr) {
   const target = new Date(dateStr);
   return Math.round((target - now) / 86400000);
 }
- 
+
 function showToast(msg) {
   const t = document.getElementById('toast');
   document.getElementById('toastMsg').textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3200);
 }
- 
+
 // ─────────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────────
